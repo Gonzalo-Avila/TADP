@@ -43,12 +43,12 @@ module MetodosDeContratos
             i+=1
           end
 
-          @@listaDeBefore.each { |bloque| bloque.call}
+          @@listaDeBefore.each { |bloque| bloque.call }
           returnValue = old_method.bind(self).call
           @@listaDeAfter.each { |bloque| bloque.call }
 
           while j<finalPostVal do
-            if !@@listaDePostcondiciones.at(j).call
+            if !@@listaDePostcondiciones.at(j).call(returnValue)
               raise "No se cumplen las postcondiciones"
             else
               puts "Se cumplen las postcondiciones"
@@ -68,7 +68,7 @@ module MetodosDeContratos
           j=initialPostVal
 
           while i<finalPreVal do
-            if !@@listaDePrecondiciones.at(i).call
+            if !@@listaDePrecondiciones.at(i).call(*args)
               raise "No se cumplen las precondiciones"
             else
               puts "Se cumplen las precondiciones"
@@ -82,7 +82,7 @@ module MetodosDeContratos
 
 
           while j<finalPostVal do
-            if !@@listaDePostcondiciones.at(j).call
+            if !@@listaDePostcondiciones.at(j).call(returnValue)
               raise "No se cumplen las postcondiciones"
             else
               puts "Se cumplen las postcondiciones"
@@ -101,8 +101,8 @@ module MetodosDeContratos
   end
 
   def invariant(&estadoConsistente)
-    chequearConsistencia = proc do
-      if !estadoConsistente.call
+    chequearConsistencia = proc do |*args|
+      if !estadoConsistente.call(*args)
         raise "El estado del objeto es inconsistente"
       else
         puts "El estado del objeto es consistente"
@@ -177,14 +177,16 @@ class Prueba2
     @contador=0
   end
 
-  pre{1<2}
-  def metodo(arg1, arg2)
-    return @contador + arg1*arg2
+  #pre{arg1>arg2}
+  #
+  post{|res| res==2}
+  def multiplicar(num1, num2)
+    return num1*num2
   end
 
 end
 
-puts Prueba2.new.metodo(2,4)
+puts Prueba2.new.multiplicar(2,2)
 
 
 
