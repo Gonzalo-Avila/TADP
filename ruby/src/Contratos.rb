@@ -45,7 +45,7 @@ class Prueba
 
   before_and_after_each_call( proc {puts "hola"}, proc {puts "chau"} )
   before_and_after_each_call( proc {puts "holahola"}, proc {puts "chauchau"} )
-
+  
   def m
     puts "1"
   end
@@ -53,10 +53,14 @@ class Prueba
   def pruebita(unString)
     puts unString
   end
+
+  def pruebita2(unString, otroString)
+    puts unString + otroString
+  end
 end
 
-
-
+Prueba.new.pruebita("Hola")
+Prueba.new.pruebita2("Hola","K ase")
 
 
 

@@ -1,15 +1,28 @@
 class X
-  def self.m1
-    puts "Normal"
+  attr_accessor :contador
+
+  def initialize
+    @contador = 0
+  end
+
+  def sumar
+    @contador+=1
+  end
+
+end
+
+instancia = X.new
+puts instancia.contador
+sumar_uno = instancia.method(:sumar)
+sumar_uno.call
+puts instancia.contador
+
+sumar_uno.singleton_class.class_eval do
+  def call
+    puts "cambia algo"
   end
 end
 
-instancia1 = X.new
-metodo1 = instancia1.singleton_class.method(:m1)
-
-metodo1.singleton_class.define_method (:call) do
-  puts ("Le agrego esto")
-  
-end
-
-metodo1.call
+sumar_uno.call
+instancia.sumar
+puts instancia.contador

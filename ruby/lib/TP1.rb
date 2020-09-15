@@ -20,6 +20,8 @@ class Framework
     @listaDeAfter.each { |bloque| bloque.call }
   end
 
+
+
 end
 
 
@@ -41,8 +43,6 @@ end
 
 
 TemplateClass.new.send(:m)
-
-TemplateClass.method(:qwe).singleton_class.define_method(:call) do
-  puts("Asd")
-end
+TemplateClass.new.m
+d
 
