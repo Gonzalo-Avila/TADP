@@ -1,35 +1,117 @@
 module MetodosDeContratos
-  @@listaDeBefore = []
-  @@listaDeAfter = []
+  attr_accessor :listaDeBefore, :listaDeInvariantes, :listaDeAfter, :listaDePrecondiciones, :listaDePostcondiciones,
+                :new_method
 
-  def before_and_after_each_call(procBefore, procAfter)
-      @@listaDeBefore << procBefore
-      @@listaDeAfter << procAfter
+  def listaDeBefore
+    @listaDeBefore ||= []
+    @listaDeBefore
   end
 
-  @@new_method = true
+  def listaDeAfter
+    @listaDeAfter ||= []
+    @listaDeAfter
+  end
+
+  def listaDeInvariantes
+    @listaDeInvariantes ||= []
+    @listaDeInvariantes
+  end
+
+  def listaDePrecondiciones
+    @listaDePrecondiciones ||= []
+    @listaDePrecondiciones
+  end
+
+  def listaDePostcondiciones
+    @listaDePostcondiciones ||= []
+    @listaDePostcondiciones
+  end
+
+  def before_and_after_each_call(procBefore, procAfter)
+      listaDeBefore << procBefore
+      listaDeAfter << procAfter
+  end
+
+  def obtenerYQuitarUltimasPrecondiciones
+    precondiciones = listaDePrecondiciones.pop(listaDePrecondiciones.size)
+    precondiciones
+  end
+
+  def obtenerYQuitarUltimasPostcondiciones
+    postcondiciones = listaDePostcondiciones.pop(listaDePostcondiciones.size)
+    postcondiciones
+  end
+
   def method_added(name)
 
-    if @@new_method
-      @@new_method = false
+    if @new_method.nil? || @new_method  #No entendi porque el metodo quedaba en loop, ¿no es mas facil asi?
+      puts (name)
+
+      @new_method = false
+
       old_method = instance_method(name)
 
-      if old_method.arity == 0
-        define_method(name) do
-          @@listaDeBefore.each { |bloque| bloque.call}
-          old_method.bind(self).call
-          @@listaDeAfter.each { |bloque| bloque.call }
-        end
-      else
-        define_method(name) do |args,&block|
-          @@listaDeBefore.each { |bloque| bloque.call}
-          old_method.bind(self).call(args,&block)
-          @@listaDeAfter.each { |bloque| bloque.call }
-        end
-      end
+      #Con el nuevo cambio a las variables, ahora cuando se ejecuta el metodo en las instancias de las clases, estas
+      #tienen que ir a buscar los procs a las listas que pertenecen a las clases y no a sus listas propias.
+      #Por eso self.class
+      preCondicionesDelMetodo = obtenerYQuitarUltimasPrecondiciones
+      postCondicionesDelMetodo = obtenerYQuitarUltimasPostcondiciones
+      define_method(name) do |*args,&block|
 
-      @@new_method = true
+        #EJECUTAR PRECONDICIONES
+        preCondicionesDelMetodo.each do |precondicion|
+          if !self.instance_eval(&precondicion)
+            raise "No se cumplen las precondiciones"
+          else
+            puts "Se cumplen las precondiciones"
+          end
+        end
+
+        #EJECUTAR BEFORE
+        self.class.listaDeBefore.each { |bloque| self.instance_eval(&bloque)}
+
+        #EJECUTAR COMPORTAMIENTO DEL METODO ORIGINAL
+        returnValue = old_method.bind(self).call(*args,&block)
+
+        #EJECUTAR AFTER
+        self.class.listaDeAfter.each { |bloque| self.instance_eval(&bloque)}
+
+        #EJECUTAR INVARIANTES
+        self.class.listaDeInvariantes.each do|invariante|
+          if !self.instance_eval(&invariante)
+            raise "El estado del objeto es inconsistente"
+          else
+            puts "El estado del objeto es consistente"
+          end
+        end
+
+        #EJECUTAR POSTCONDICIONES
+        postCondicionesDelMetodo.each do |postcondicion|
+          if !self.instance_exec(returnValue, &postcondicion)
+            raise "No se cumplen las postcondiciones"
+          else
+            puts "Se cumplen las postcondiciones"
+          end
+        end
+
+        #RETORNAR VALOR DE RETORNO DEL METODO ORIGINAL
+        returnValue
+      end
+      @new_method = true
     end
+
+  end
+
+  def invariant(&estado_consistente)
+    listaDeInvariantes << estado_consistente
+  end
+
+  def pre(&precondicion)
+    listaDePrecondiciones << precondicion
+  end
+
+  def post(&postcondicion)
+    listaDePostcondiciones << postcondicion
   end
 
 end
@@ -39,31 +121,6 @@ module Contratos
     clase.extend MetodosDeContratos
   end
 end
-
-class Prueba
-  include Contratos
-
-  before_and_after_each_call( proc {puts "hola"}, proc {puts "chau"} )
-  before_and_after_each_call( proc {puts "holahola"}, proc {puts "chauchau"} )
-  
-  def m
-    puts "1"
-  end
-
-  def pruebita(unString)
-    puts unString
-  end
-
-  def pruebita2(unString, otroString)
-    puts unString + otroString
-  end
-end
-
-Prueba.new.pruebita("Hola")
-Prueba.new.pruebita2("Hola","K ase")
-
-
-
 
 
 

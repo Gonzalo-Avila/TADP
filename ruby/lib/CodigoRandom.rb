@@ -1,28 +1,14 @@
-class X
-  attr_accessor :contador
-
-  def initialize
-    @contador = 0
-  end
-
-  def sumar
-    @contador+=1
-  end
-
-end
-
-instancia = X.new
-puts instancia.contador
-sumar_uno = instancia.method(:sumar)
-sumar_uno.call
-puts instancia.contador
-
-sumar_uno.singleton_class.class_eval do
-  def call
-    puts "cambia algo"
+class A
+  def self.ejecutarProc(procAEjecutar)
+    var=0
+    class_eval(&procAEjecutar)
   end
 end
 
-sumar_uno.call
-instancia.sumar
-puts instancia.contador
+var = 5
+p = proc do
+  puts var
+end
+p.call
+
+A.ejecutarProc(p)

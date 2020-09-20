@@ -1,4 +1,5 @@
 describe Prueba do
+
   let(:prueba) { Prueba.new }
 
   describe '#materia' do
@@ -7,3 +8,4 @@ describe Prueba do
     end
   end
 end
+

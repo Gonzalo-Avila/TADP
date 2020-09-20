@@ -45,7 +45,7 @@ module MetodosDeContratos
 
           @@listaDeBefore.each { |bloque| bloque.call }
           returnValue = old_method.bind(self).call
-          @@listaDeAfter.each { |bloque| bloque.call }
+          @@listaDeAfter.each { |bloque| bloque.call } #Evaluar contexto
 
           while j<finalPostVal do
             if !@@listaDePostcondiciones.at(j).call(returnValue)
@@ -135,10 +135,10 @@ end
 class Prueba
 
   include Contratos
-
+  attr_accessor :vida
   before_and_after_each_call( proc {puts "Entrando a un metodo"}, proc {puts "Saliendo de un metodo"} )
 
-  invariant{25==25}
+  invariant{vida>0}
 
   pre {1<2}
   post {1<2}
@@ -186,7 +186,7 @@ class Prueba2
 
 end
 
-puts Prueba2.new.multiplicar(2,2)
+puts Prueba2.new.multiplicar(2,1)
 
 
 
