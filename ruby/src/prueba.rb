@@ -13,8 +13,8 @@ class Prueba
 
   pre{@var<7}
   post{@var<7}
-  def subirVar
-    @var+=2
+  def subirVar(unNumero)
+    @var+=unNumero
   end
 
   pre{n1<7}
@@ -25,9 +25,9 @@ class Prueba
 end
 
 i = Prueba.new
-i.subirVar
-i.subirVar
-i.subirVar
-i.subirVar
+i.subirVar(2)
+i.subirVar(2)
+i.subirVar(2)
+puts i.sumar(2,3)
 
 

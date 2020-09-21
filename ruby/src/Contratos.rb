@@ -42,10 +42,20 @@ module MetodosDeContratos
     postcondiciones
   end
 
+  class Contexto
+    def setearContexto(parametros)
+      parametros.each do |nombre, valor|
+        define_singleton_method(nombre) do
+          valor
+        end
+      end
+    end
+  end
+
   def method_added(name)
 
     if @new_method.nil? || @new_method  #No entendi porque el metodo quedaba en loop, ¿no es mas facil asi?
-      puts (name)
+      #puts (name)
 
       @new_method = false
 
@@ -58,12 +68,26 @@ module MetodosDeContratos
       postCondicionesDelMetodo = obtenerYQuitarUltimasPostcondiciones
       define_method(name) do |*args,&block|
 
+        nombreDeParametros = old_method.parameters.map {|_,nombre| nombre }
+
+        #Armo la lista con el nombre de cada parametro y su valor.
+        parametros = []
+        i = 0
+        while i < nombreDeParametros.length
+          parametros << [nombreDeParametros[i], args[i]]
+          i = i + 1
+        end
+
+        #Preparo el contexto para Precondiciones y Postcondiciones
+        contexto = Contexto.new
+        contexto.setearContexto(parametros)
+
         #EJECUTAR PRECONDICIONES
         preCondicionesDelMetodo.each do |precondicion|
-          if !self.instance_eval(&precondicion)
+          if !contexto.instance_eval(&precondicion)
             raise "No se cumplen las precondiciones"
           else
-            puts "Se cumplen las precondiciones"
+            #puts "Se cumplen las precondiciones"
           end
         end
 
@@ -81,7 +105,7 @@ module MetodosDeContratos
           if !self.instance_eval(&invariante)
             raise "El estado del objeto es inconsistente"
           else
-            puts "El estado del objeto es consistente"
+            # puts "El estado del objeto es consistente"
           end
         end
 
@@ -90,7 +114,7 @@ module MetodosDeContratos
           if !self.instance_exec(returnValue, &postcondicion)
             raise "No se cumplen las postcondiciones"
           else
-            puts "Se cumplen las postcondiciones"
+            #  puts "Se cumplen las postcondiciones"
           end
         end
 
