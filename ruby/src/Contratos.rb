@@ -77,13 +77,9 @@ module MetodosDeContratos
         nombreDeParametrosInstancia = self.instance_variables
 
         #Armo la lista con el nombre de cada parametro y su valor.
-        parametros = []
+
+        parametros = nombreDeParametros.zip(args)
         parametrosDeInstancia = []
-        i = 0
-        while i < nombreDeParametros.length
-          parametros << [nombreDeParametros[i], args[i]]
-          i = i + 1
-        end
 
         i = 0
         while i < nombreDeParametrosInstancia.length
@@ -91,44 +87,59 @@ module MetodosDeContratos
           i = i + 1
         end
 
-        #Preparo el contexto para Precondiciones y Postcondiciones
-        contexto = Contexto.new
-        contexto.setearContexto(parametros)
-        contexto.setearContextoInstancia(parametrosDeInstancia)
+        #Preparo el contexto para Precondiciones
+        contextoPre = Contexto.new
+        contextoPre.setearContexto(parametros)
+        contextoPre.setearContextoInstancia(parametrosDeInstancia)
 
         #EJECUTAR PRECONDICIONES
         preCondicionesDelMetodo.each do |precondicion|
-          if !contexto.instance_eval(&precondicion)
+          if !contextoPre.instance_eval(&precondicion)
             raise "No se cumplen las precondiciones"
           else
-            #puts "Se cumplen las precondiciones"
+            puts "Se cumplen las precondiciones"
           end
         end
 
         #EJECUTAR BEFORE
-        self.class.listaDeBefore.each { |bloque| self.instance_eval(&bloque)}
+        if(!(name==:initialize))
+          self.class.listaDeBefore.each { |bloque| self.instance_eval(&bloque)}
+        end
 
         #EJECUTAR COMPORTAMIENTO DEL METODO ORIGINAL
         returnValue = old_method.bind(self).call(*args,&block)
 
         #EJECUTAR AFTER
-        self.class.listaDeAfter.each { |bloque| self.instance_eval(&bloque)}
+        if(!(name==:initialize))
+         self.class.listaDeAfter.each { |bloque| self.instance_eval(&bloque)}
+        end
 
         #EJECUTAR INVARIANTES
         self.class.listaDeInvariantes.each do|invariante|
           if !self.instance_eval(&invariante)
             raise "El estado del objeto es inconsistente"
           else
-            # puts "El estado del objeto es consistente"
+             puts "El estado del objeto es consistente"
           end
         end
 
+        j = 0
+        while j < nombreDeParametrosInstancia.length
+          parametrosDeInstancia << [nombreDeParametrosInstancia[j], self.instance_variable_get(nombreDeParametrosInstancia[j])]
+          j = j + 1
+        end
+
+        #Preparo el contexto para Postcondiciones
+        contextoPost = Contexto.new
+        contextoPost.setearContexto(parametros)
+        contextoPost.setearContextoInstancia(parametrosDeInstancia)
+
         #EJECUTAR POSTCONDICIONES
         postCondicionesDelMetodo.each do |postcondicion|
-          if !self.instance_exec(returnValue, &postcondicion)
+          if !contextoPost.instance_exec(returnValue, &postcondicion)
             raise "No se cumplen las postcondiciones"
           else
-            #  puts "Se cumplen las postcondiciones"
+              puts "Se cumplen las postcondiciones"
           end
         end
 
@@ -137,7 +148,6 @@ module MetodosDeContratos
       end
       @new_method = true
     end
-
   end
 
   def invariant(&estado_consistente)
@@ -159,7 +169,4 @@ module Contratos
     clase.extend MetodosDeContratos
   end
 end
-
-
-
 

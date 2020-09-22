@@ -5,7 +5,7 @@ class Prueba
 
   @var
   #before_and_after_each_call( proc {puts @var}, proc {puts @var} )
-  invariant {@var<10}
+  #invariant {@var<10}
 
   def initialize
     @var = 0
@@ -17,17 +17,18 @@ class Prueba
     @var+=unNumero
   end
 
-  pre{n1<7}
+  pre{n1<7 && @var==0}
+  post{|val| n1+n2==val && @var<5}
   def sumar(n1,n2)
+    @var+=4
     return n1+n2
   end
+
 
 end
 
 i = Prueba.new
-i.subirVar(2)
-i.subirVar(2)
-i.subirVar(2)
-puts i.sumar(2,3)
+
+puts i.sumar(6,3)
 
 
