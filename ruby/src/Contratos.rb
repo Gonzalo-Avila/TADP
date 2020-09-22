@@ -50,11 +50,16 @@ module MetodosDeContratos
         end
       end
     end
+    def setearContextoInstancia(parametros)
+      parametros.each do |nombre,valor|
+        self.instance_variable_set(nombre,valor)
+      end
+    end
   end
 
   def method_added(name)
 
-    if @new_method.nil? || @new_method  #No entendi porque el metodo quedaba en loop, ¿no es mas facil asi?
+    if @new_method.nil? || @new_method   #No entendi porque el metodo quedaba en loop, ¿no es mas facil asi?
       #puts (name)
 
       @new_method = false
@@ -69,18 +74,27 @@ module MetodosDeContratos
       define_method(name) do |*args,&block|
 
         nombreDeParametros = old_method.parameters.map {|_,nombre| nombre }
+        nombreDeParametrosInstancia = self.instance_variables
 
         #Armo la lista con el nombre de cada parametro y su valor.
         parametros = []
+        parametrosDeInstancia = []
         i = 0
         while i < nombreDeParametros.length
           parametros << [nombreDeParametros[i], args[i]]
           i = i + 1
         end
 
+        i = 0
+        while i < nombreDeParametrosInstancia.length
+          parametrosDeInstancia << [nombreDeParametrosInstancia[i], self.instance_variable_get(nombreDeParametrosInstancia[i])]
+          i = i + 1
+        end
+
         #Preparo el contexto para Precondiciones y Postcondiciones
         contexto = Contexto.new
         contexto.setearContexto(parametros)
+        contexto.setearContextoInstancia(parametrosDeInstancia)
 
         #EJECUTAR PRECONDICIONES
         preCondicionesDelMetodo.each do |precondicion|

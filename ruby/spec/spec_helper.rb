@@ -1,3 +1,3 @@
 require 'rspec'
 
-require_relative '../src/prueba'
+require_relative '../src/Contratos'
