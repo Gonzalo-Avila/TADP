@@ -4,13 +4,10 @@ describe Contratos do
 
       #Si incluimos contratos antes de declarar los accessors, los before and after se ejecutaran cada vez que se haga
       #un get o un set de una variable
-
-      attr_accessor :var1, :var2, :var3, :var4
       include Contratos
-
-      before_and_after_each_call(proc {@var1+=2}, proc{@var2-=1})
-      before_and_after_each_call(proc {@var3+=4}, proc{@var4-=3})
-
+      attr_accessor :var1, :var2, :var3, :var4
+      before_and_after_each_call(proc {@var1+=1}, proc{@var2-=1})
+      before_and_after_each_call(proc {@var3+=1}, proc{@var4-=1})
       def initialize
         @var1 = 0
         @var2 = 10
@@ -25,23 +22,23 @@ describe Contratos do
 
     it("Se ejecutan todos los before_and_after") do
       instance = A.new
-      expect(instance.var1).to eq(0)
-      expect(instance.var2).to eq(10)
-      expect(instance.var3).to eq(0)
-      expect(instance.var4).to eq(10)
-      instance.m
-      expect(instance.var1).to eq(2)
+      expect(instance.var1).to eq(1)
       expect(instance.var2).to eq(9)
-      expect(instance.var3).to eq(4)
+      expect(instance.var3).to eq(3)
       expect(instance.var4).to eq(7)
+      instance.m
+      expect(instance.var1).to eq(6)
+      expect(instance.var2).to eq(4)
+      expect(instance.var3).to eq(8)
+      expect(instance.var4).to eq(2)
     end
 
   end
 
   describe '#Invariantes' do
     class B
-      attr_accessor :var1, :var2, :var3, :var4
       include Contratos
+      attr_accessor :var1, :var2, :var3, :var4
 
       invariant {@var1 == 2}
       invariant {@var2 < 2}
@@ -146,9 +143,8 @@ describe Contratos do
 
   describe '#Postcondiciones 2' do
     class C
-      attr_accessor :var1, :var2
       include Contratos
-
+      attr_accessor :var1, :var2
 
       def initialize
         @var1=0
@@ -173,8 +169,72 @@ describe Contratos do
 
   end
 
+  describe '#Contexto' do
+    attr_accessor :contadorBefore, :contadorAfter
+    class Y
+      def m1
+        puts "Ejecutando m1"
+      end
+    end
+
+    class Z < Y
+      include Contratos
+
+      before_and_after_each_call(proc {puts "Antes"}, proc {puts "Despues"})
+
+      def m2
+        puts "Ejecutando m2"
+      end
+    end
+
+    it("Los contratos no se aplican a metodos heredados") do
+      i = Z.new
+      i.m1
+      i.m2
+    end
+
+  end
+
+  describe '#Interacción con metodos dentro de los contratos' do
+    #before m -> +1
+    #before n -> +1
+    #after n -> +1
+    #m -> +1
+    #Retorna 4
+    #After m -> +1
+    #Before var -> +1
+    #Retorna 6
+    #After var -> +1
+    class F
+      include Contratos
+      attr_accessor :var
+      before_and_after_each_call(proc {m}, proc {m})
+
+      def initialize
+        @var=0
+      end
+
+      def n
+      end
+
+      def m
+        n
+        @var+=1
+      end
+
+    end
+
+    it("No se ejecutan los contratos de un metodo cuando es llamado desde un contrato") do
+      i = F.new
+      expect(i.m).to eq(4)
+      expect(i.var).to eq(6)
+    end
+
+  end
+
   describe '#TP - Caso de uso 1 - Before_and_after' do
     class MiClase
+
       include Contratos
       before_and_after_each_call(
           # Bloque Before. Se ejecuta antes de cada mensaje
@@ -207,40 +267,47 @@ describe Contratos do
 
   describe '#TP - Caso de uso 2 - Invariant' do
     class Guerrero
-      attr_accessor :vida, :fuerza
       include Contratos
+      attr_accessor :vida, :fuerza, :nombre
 
       invariant { vida >= 0 }
       invariant { fuerza > 0 && fuerza < 100 }
 
-      def initialize(vida,fuerza)
+      def initialize(vida,fuerza, nombre)
         @vida = vida
         @fuerza = fuerza
+        @nombre = nombre
       end
 
       def atacar(otro)
+        puts @nombre
         otro.recibirDanio(fuerza)
+
       end
 
       def recibirDanio(fuerza)
+        puts @nombre
         self.vida-=fuerza
       end
     end
 
     it("El guerrero no puede tener 0 o menos de fuerza") do
-      expect{Guerrero.new(15,0)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{Guerrero.new(15,0,"G1")}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
     end
 
     it("El guerrero no puede tener 100 o mas de fuerza") do
-      expect{Guerrero.new(15,100)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{Guerrero.new(15,100,"G1")}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
     end
 
-
-    it("El guerrero puede recibir daño correctamente")do
-      guerrero1 = Guerrero.new(20,5)
-      guerrero2 = Guerrero.new(5,50)
+    it("El guerrero puede recibir daño correctamente") do
+      guerrero1 = Guerrero.new(20,5,"G1")
+      puts "1"
+      guerrero2 = Guerrero.new(5,50,"G2")
+      puts "2"
       guerrero1.atacar(guerrero2)
+      puts "3"
       expect(guerrero2.vida).to eq(0)
+      puts "4"
     end
 
     it("El guerrero no puede tener menos de 0 de vida") do
@@ -288,8 +355,8 @@ describe Contratos do
   describe '#TP - Caso de uso 4 - Ejemplo integrador' do
 
     class Pila
-      attr_accessor :current_node, :capacity
       include Contratos
+      attr_accessor :current_node, :capacity
 
       invariant { capacity >= 0 }
 

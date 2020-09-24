@@ -1,6 +1,6 @@
 module MetodosDeContratos
   attr_accessor :listaDeBefore, :listaDeInvariantes, :listaDeAfter, :listaDePrecondiciones, :listaDePostcondiciones,
-                :new_method
+                :new_method, :ejecutando_contrato
 
   def listaDeBefore
     @listaDeBefore ||= []
@@ -73,6 +73,8 @@ module MetodosDeContratos
       postCondicionesDelMetodo = obtenerYQuitarUltimasPostcondiciones
       define_method(name) do |*args,&block|
 
+        @ejecutando_contrato||=false
+
         nombreDeParametros = old_method.parameters.map {|_,nombre| nombre }
         nombreDeParametrosInstancia = self.instance_variables
 
@@ -93,34 +95,52 @@ module MetodosDeContratos
         contextoPre.setearContextoInstancia(parametrosDeInstancia)
 
         #EJECUTAR PRECONDICIONES
-        preCondicionesDelMetodo.each do |precondicion|
-          if !contextoPre.instance_eval(&precondicion)
-            raise "No se cumplen las precondiciones"
-          else
-            puts "Se cumplen las precondiciones"
+
+        if !@ejecutando_contrato
+          @ejecutando_contrato=true
+          preCondicionesDelMetodo.each do |precondicion|
+            if !contextoPre.instance_eval(&precondicion)
+              raise "No se cumplen las precondiciones"
+            else
+              puts "Se cumplen las precondiciones"
+            end
           end
+          @ejecutando_contrato=false
         end
 
+
         #EJECUTAR BEFORE
-        if(!(name==:initialize))
-          self.class.listaDeBefore.each { |bloque| self.instance_eval(&bloque)}
+        if !@ejecutando_contrato
+         @ejecutando_contrato=true
+          if(!(name==:initialize))
+            self.class.listaDeBefore.each { |bloque| self.instance_eval(&bloque)}
+          end
+         @ejecutando_contrato=false
         end
 
         #EJECUTAR COMPORTAMIENTO DEL METODO ORIGINAL
         returnValue = old_method.bind(self).call(*args,&block)
 
         #EJECUTAR AFTER
-        if(!(name==:initialize))
-         self.class.listaDeAfter.each { |bloque| self.instance_eval(&bloque)}
+        if !@ejecutando_contrato
+          @ejecutando_contrato=true
+          if(!(name==:initialize))
+            self.class.listaDeAfter.each { |bloque| self.instance_eval(&bloque)}
+          end
+          @ejecutando_contrato=false
         end
 
         #EJECUTAR INVARIANTES
-        self.class.listaDeInvariantes.each do|invariante|
-          if !self.instance_eval(&invariante)
-            raise "El estado del objeto es inconsistente"
-          else
-             puts "El estado del objeto es consistente"
+        if !@ejecutando_contrato
+          @ejecutando_contrato=true
+          self.class.listaDeInvariantes.each do|invariante|
+            if !self.instance_eval(&invariante)
+              raise "El estado del objeto es inconsistente"
+            else
+               puts "El estado del objeto es consistente"
+            end
           end
+          @ejecutando_contrato=false
         end
 
         j = 0
@@ -135,12 +155,16 @@ module MetodosDeContratos
         contextoPost.setearContextoInstancia(parametrosDeInstancia)
 
         #EJECUTAR POSTCONDICIONES
-        postCondicionesDelMetodo.each do |postcondicion|
-          if !contextoPost.instance_exec(returnValue, &postcondicion)
-            raise "No se cumplen las postcondiciones"
-          else
-              puts "Se cumplen las postcondiciones"
-          end
+        if !@ejecutando_contrato
+           @ejecutando_contrato=true
+           postCondicionesDelMetodo.each do |postcondicion|
+             if !contextoPost.instance_exec(returnValue, &postcondicion)
+               raise "No se cumplen las postcondiciones"
+             else
+               puts "Se cumplen las postcondiciones"
+             end
+           end
+          @ejecutando_contrato=false
         end
 
         #RETORNAR VALOR DE RETORNO DEL METODO ORIGINAL
