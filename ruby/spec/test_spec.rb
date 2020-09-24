@@ -125,18 +125,49 @@ describe Contratos do
 
   describe '#Postcondiciones' do
     class Hb
+      @var = 0
+
+      def initialize
+        @var = 0
+      end
+
       include Contratos
 
       post{|retorno| retorno == 0 }
-
       def a(a)
         a - a
       end
 
+      post{|retorno| retorno > 0}
+      def b(b)
+        b.abs
+      end
+
+      post{|retorno| retorno > 0}
+      def c(c)
+        c - 2*c
+      end
+
+      post{|retorno| retorno == 1}
+      def d(d)
+        d ** @var
+      end
     end
 
     it("Le resto a un numero su propio valor y devuelve 0") do
       expect(Hb.new.a(2)).to eq(0)
+    end
+
+    it("Calculo el valor absoluto de un número negativo y este es mayor a 0") do
+      expect(Hb.new.b(-5)). to eq(5)
+    end
+
+    it("Le resto a un numero su doble, pero debe ser mayor a 0. Por lo tanto falla y tira excepción") do
+      expect{Hb.new.c(4)}.to raise_error(RuntimeError,"No se cumplen las postcondiciones")
+    end
+
+    it("Elevo un numero a 0 y devuelve 1") do
+      expect(Hb.new.d(3)). to eq(1)
     end
 
   end

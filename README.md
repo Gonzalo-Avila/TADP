@@ -1,3 +1,10 @@
 # TADP
 
-Este repositorio tiene la estructura básica para arrancar a _darle átomos_ a la materia! :rocket:
+###Grupo 4 :rocket:
+
+####Integrantes:
+* Ávila, Gonzalo
+* Ayala, Emmanuel Matias
+* Collazo, Cecilia
+* Collazo, Nicolás
+* Luengo, Ramiro Mateo
