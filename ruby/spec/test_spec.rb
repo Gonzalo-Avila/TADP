@@ -120,6 +120,21 @@ describe Contratos do
     end
   end
 
+  describe '#Postcondiciones' do
+    class Hb
+      include Contratos
+
+      post{a == 0 }
+      def a(a)
+        a - a
+      end
+    end
+
+    it("Le resto a un numero su propio valor y devuelve 0") do
+      expect(Ha.new.a(2)).to eq(0)
+    end
+
+  end
 end
 
 
