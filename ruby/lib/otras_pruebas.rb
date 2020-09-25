@@ -1,6 +1,6 @@
 require_relative 'Contratos.rb'
 
-class Prueba
+class OtrasPruebas
   include Contratos
 
   @var
@@ -27,7 +27,7 @@ class Prueba
 
 end
 
-i = Prueba.new
+i = OtrasPruebas.new
 
 puts i.sumar(6,3)
 

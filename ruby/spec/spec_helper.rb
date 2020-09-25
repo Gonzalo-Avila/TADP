@@ -1,3 +1,3 @@
 require 'rspec'
 
-require_relative '../src/Contratos'
+require_relative '../lib/Contratos'
