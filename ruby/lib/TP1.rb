@@ -1,7 +1,7 @@
 class Framework
 
-  attr_accessor :listaDeBefore
-  attr_accessor :listaDeAfter
+  attr_accessor :lista_before
+  attr_accessor :lista_after
 
   def initialize
     @listaDeBefore=Array.new

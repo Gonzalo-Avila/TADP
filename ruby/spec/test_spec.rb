@@ -100,26 +100,26 @@ describe Contratos do
 
 
       pre{a < 10}
-      def a(a,b)
+      def asd(a,b)
         a + b
       end
 
       pre{@var > 5}
-      def b(a)
+      def qwe(a)
         a
       end
     end
 
     it("Con a < 10 la precondicion pasa y devuelve a + b") do
-      expect(Ha.new.a(1,2)).to eq(3)
+      expect(Ha.new.asd(1,2)).to eq(3)
     end
 
     it("Con a > 10 la precondicion no pasa y devuelve exception") do
-      expect{Ha.new.a(11,1)}.to raise_error(RuntimeError,"No se cumplen las precondiciones")
+      expect{Ha.new.asd(11,1)}.to raise_error(RuntimeError,"No se cumplen las precondiciones")
     end
 
     it("Con @var > 5 la precondicion pasa y devuelve @var") do
-      expect(Ha.new.b(2)).to eq(2)
+      expect(Ha.new.qwe(2)).to eq(2)
     end
   end
 
@@ -296,6 +296,7 @@ describe Contratos do
 
   end
 
+=begin
   describe '#TP - Caso de uso 2 - Invariant' do
     class Guerrero
       include Contratos
@@ -318,7 +319,7 @@ describe Contratos do
 
       def recibirDanio(cantidad)
         puts @nombre
-        @vida-=cantidad   #TODO -Si pongo self.vida en vez de @vida rompe, hay que ver por que
+        vida-=cantidad   #TODO -Si pongo self.vida en vez de @vida rompe, hay que ver por que
       end
     end
 
@@ -347,7 +348,48 @@ describe Contratos do
       expect{guerrero1.atacar(guerrero2)}.to raise_error(RuntimeError, "El estado del objeto es inconsistente")
     end
   end
+=end
+  describe '#TP - Caso de uso 2 - Invariantes' do
+    class Guerrero
+      include Contratos
+      attr_accessor :vida, :fuerza
 
+      invariant { vida >= 0 }
+      invariant { fuerza > 0 && fuerza < 100 }
+
+      def initialize(vida, fuerza)
+        @vida = vida
+        @fuerza = fuerza
+      end
+
+      def atacar(otro)
+        otro.vida -= fuerza
+      end
+
+    end
+
+    it("El guerrero no puede tener 0 o menos de fuerza") do
+      expect{Guerrero.new(15,0)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+    end
+
+    it("El guerrero no puede tener 100 o mas de fuerza") do
+      expect{Guerrero.new(15,100)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+    end
+
+    it("El guerrero recibe daño correctamente mientras su vida no quede en negativo") do
+      guerrero1 = Guerrero.new(15,10)
+      guerrero2 = Guerrero.new(10,15)
+      guerrero1.atacar(guerrero2)
+      expect(guerrero2.vida).to eq(0)
+    end
+
+    it("Un guerrero no puede recibir daño que deje su vida en negativo") do
+      guerrero1 = Guerrero.new(15,11)
+      guerrero2 = Guerrero.new(10,15)
+      expect{guerrero1.atacar(guerrero2)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+    end
+
+  end
   describe '#TP - Caso de uso 3 - Precondiciones y postcondiciones' do
     class Operaciones
       include Contratos
@@ -434,8 +476,41 @@ describe Contratos do
       end
     end
 
-    it("No explota") do
+    it("Se puede instanciar una pila con capacidad mayor o igual a 0") do
       pila = Pila.new(10)
+    end
+
+    it("No se puede instanciar una pila con capacidad negativa") do
+      expect{pila = Pila.new(-1)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+    end
+
+    it("Se puede pushear un elemento a la pila") do
+      pila = Pila.new(2)
+      pila.push("Elemento 1")
+      expect(pila.pop).to eq("Elemento 1")
+    end
+
+    it("Al popear se saca el ultimo elemento pusheado de la pila") do
+      pila = Pila.new(2)
+      pila.push("Elemento 1")
+      pila.push("Elemento 2")
+      expect(pila.pop).to eq("Elemento 2")
+    end
+
+    it("No se puede superar la capacidad de una pila") do
+      pila = Pila.new(2)
+      pila.push("Elemento 1")
+      pila.push("Elemento 2")
+      expect{pila.push("Elemento 3")}.to raise_error("No se cumplen las precondiciones")
+    end
+
+    it("No se puede hacer pop en una pila vacia") do
+      pila = Pila.new(2)
+      pila.push("Elemento 1")
+      pila.push("Elemento 2")
+      expect(pila.pop).to eq("Elemento 2")
+      expect(pila.pop).to eq("Elemento 1")
+      expect{pila.pop}.to raise_error("No se cumplen las precondiciones")
     end
 
   end

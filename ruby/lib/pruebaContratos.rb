@@ -1,6 +1,6 @@
 module Contratos
-  attr_accessor :listaDeBefore
-  attr_accessor :listaDeAfter
+  attr_accessor :lista_before
+  attr_accessor :lista_after
 
   def initialize
     listaDeBefore = []
@@ -21,7 +21,7 @@ module Contratos
 
   def agregarAntesDeCadaMetodo()
     misMetodos = self.instance_methods(false)
-    listaDeBefore.each {|bloque| }
+    lista_before.each {|bloque| }
   end
 
   def aplicarBloqueAListaDeMetodos(bloque, misMetodos)
@@ -30,7 +30,7 @@ module Contratos
 
   def agregarBefores(metodo)
     def metodo
-      listaDeBefore.each {|bloque| bloque.call}
+      lista_before.each {|bloque| bloque.call}
       super
     end
   end
