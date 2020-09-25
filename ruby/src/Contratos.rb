@@ -90,9 +90,13 @@ module MetodosDeContratos
         end
 
         #Preparo el contexto para Precondiciones
+        #puts "ROMPE ACA"
         contextoPre = Contexto.new
+        #puts "ROMPE ACA 2"
         contextoPre.setearContexto(parametros)
+        #puts "ROMPE ACA 3"
         contextoPre.setearContextoInstancia(parametrosDeInstancia)
+        #puts "ROMPE ACA 4"
 
         #EJECUTAR PRECONDICIONES
 

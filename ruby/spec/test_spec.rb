@@ -316,9 +316,9 @@ describe Contratos do
 
       end
 
-      def recibirDanio(fuerza)
+      def recibirDanio(cantidad)
         puts @nombre
-        self.vida-=fuerza
+        @vida-=cantidad   #TODO -Si pongo self.vida en vez de @vida rompe, hay que ver por que
       end
     end
 
@@ -342,8 +342,8 @@ describe Contratos do
     end
 
     it("El guerrero no puede tener menos de 0 de vida") do
-      guerrero1 = Guerrero.new(20,10)
-      guerrero2 = Guerrero.new(5,50)
+      guerrero1 = Guerrero.new(20,10,"G1")
+      guerrero2 = Guerrero.new(5,50,"G2")
       expect{guerrero1.atacar(guerrero2)}.to raise_error(RuntimeError, "El estado del objeto es inconsistente")
     end
   end
