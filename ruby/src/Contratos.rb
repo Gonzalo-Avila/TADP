@@ -43,6 +43,11 @@ module MetodosDeContratos
   end
 
   class Contexto
+    attr_accessor :instancia
+
+    def initialize(instancia)
+      @instancia = instancia
+    end
     def set_argumentos_metodo(parametros)
       parametros.each do |nombre, valor|
         if(!nombre.nil?)
@@ -59,8 +64,8 @@ module MetodosDeContratos
         end
       end
     end
+=begin
     def set_metodos_instancia(metodos)
-
       metodos.each do |nombre_metodo,metodo_bindeado|
         if(!nombre_metodo.nil?)
           define_singleton_method(nombre_metodo)do |*args,&bloque|
@@ -68,6 +73,10 @@ module MetodosDeContratos
           end
         end
       end
+    end
+=end
+    def method_missing(method,*args)
+      instancia.send(method,*args)
     end
   end
 
@@ -107,7 +116,7 @@ module MetodosDeContratos
 
         #Preparo el contexto para Precondiciones
         #puts "ROMPE ACA"
-        contexto_precondiciones = Contexto.new
+        contexto_precondiciones = Contexto.new(self)
         #puts "ROMPE ACA 2"
         contexto_precondiciones.set_argumentos_metodo(parametros_metodo)
         #puts "ROMPE ACA 3"
@@ -115,6 +124,7 @@ module MetodosDeContratos
         #puts "ROMPE ACA 4"
 
         #------------------------------------------------------------------------------------------------------
+=begin
         nombre_metodos_instancia = self.class.instance_methods
         metodos_instancia = []
         k = 0
@@ -124,6 +134,7 @@ module MetodosDeContratos
         end
 
         contexto_precondiciones.set_metodos_instancia(metodos_instancia)
+=end
         #-------------------------------------------------------------------------------------------------------
 
         #EJECUTAR PRECONDICIONES
@@ -182,11 +193,12 @@ module MetodosDeContratos
         end
 
         #Preparo el contexto para Postcondiciones
-        contexto_postcondiciones = Contexto.new
+        contexto_postcondiciones = Contexto.new(self)
         contexto_postcondiciones.set_argumentos_metodo(parametros_metodo)
         contexto_postcondiciones.set_variables_instancia(variables_instancia)
 
         #------------------------------------------------------------------------------------------------------
+=begin
         nombre_metodos_instancia = self.class.instance_methods
         metodos_instancia = []
         k = 0
@@ -195,6 +207,7 @@ module MetodosDeContratos
           k = k + 1
         end
         contexto_postcondiciones.set_metodos_instancia(metodos_instancia)
+=end
         #-------------------------------------------------------------------------------------------------------
 
         #EJECUTAR POSTCONDICIONES
