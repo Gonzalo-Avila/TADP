@@ -32,6 +32,18 @@ module MetodosDeContratos
       lista_after << procAfter
   end
 
+  def invariant(&estado_consistente)
+    lista_invariantes << estado_consistente
+  end
+
+  def pre(&precondicion)
+    lista_precondiciones << precondicion
+  end
+
+  def post(&postcondicion)
+    lista_postcondiciones << postcondicion
+  end
+
   def pop_ultimas_precondiciones
     precondiciones = lista_precondiciones.pop(lista_precondiciones.size)
     precondiciones
@@ -47,6 +59,13 @@ module MetodosDeContratos
 
     def initialize(instancia)
       self.instancia = instancia
+
+      #Armamos una lista con el nombre de cada variable de instancia y su valor actual
+      nombres_variables_instancia = instancia.instance_variables
+      valores_variables_instancia = nombres_variables_instancia.map {|nombre_var| instancia.instance_variable_get(nombre_var)}
+      variables_instancia = nombres_variables_instancia.zip(valores_variables_instancia)
+      self.set_variables_instancia(variables_instancia)
+
     end
     def set_argumentos_metodo(parametros)
       parametros.each do |nombre, valor|
@@ -68,6 +87,7 @@ module MetodosDeContratos
     def method_missing(method,*args)
       instancia.send(method,*args)
     end
+    
   end
 
   def method_added(nombre_metodo)
@@ -95,16 +115,10 @@ module MetodosDeContratos
         nombres_parametros = metodo_original.parameters.map {|_,nombre_parametro| nombre_parametro }
         parametros_metodo = nombres_parametros.zip(args)
 
-        #Armamos una lista con el nombre de cada variable de instancia y su valor actual
-        nombres_variables_instancia = self.instance_variables
-        valores_variables_instancia = nombres_variables_instancia.map {|nombre_var| self.instance_variable_get(nombre_var)}
-        variables_instancia = nombres_variables_instancia.zip(valores_variables_instancia)
-        
         #Seteamos un contexto en el que ejecutar las precondiciones, para que puedan acceder a los metodos, variables y
         #argumentos
         contexto_precondiciones = Contexto.new(self)
         contexto_precondiciones.set_argumentos_metodo(parametros_metodo)
-        contexto_precondiciones.set_variables_instancia(variables_instancia)
 
         #Ejecutamos las precondiciones en el contexto preparado previamente, si no se esta ejecutando un contrato
         if !@ejecutando_contrato
@@ -143,25 +157,20 @@ module MetodosDeContratos
         #Ejecutamos las invariantes en el contexto de la instancia, si no se esta ejecutando un contrato
         if !@ejecutando_contrato
           @ejecutando_contrato=true
+          numero_invariante_ejecutada = 1
           self.class.lista_invariantes.each do|invariante|
             if !self.instance_eval(&invariante)
-              raise "El estado del objeto es inconsistente"
+              raise "El estado del objeto es inconsistente: no se cumplió la invariante #{numero_invariante_ejecutada}"
             end
+            numero_invariante_ejecutada+=1
           end
           @ejecutando_contrato=false
         end
-
-        #Armamos una lista con el nombre de cada variable de instancia y su valor actual
-        nombres_variables_instancia = self.instance_variables
-        valores_variables_instancia = nombres_variables_instancia.map {|nombre_var| self.instance_variable_get(nombre_var)}
-        variables_instancia = nombres_variables_instancia.zip(valores_variables_instancia)
 
         #Seteamos un contexto en el que ejecutar las postcondiciones, para que puedan acceder a los metodos, variables y
         #argumentos. Usamos los mismos argumentos que en las precondiciones porque se asume que su valor no cambia.
         contexto_postcondiciones = Contexto.new(self)
         contexto_postcondiciones.set_argumentos_metodo(parametros_metodo)
-        contexto_postcondiciones.set_variables_instancia(variables_instancia)
-
 
         #Ejecutamos las postcondiciones en el contexto preparado previamente, si no se esta ejecutando un contrato
         if !@ejecutando_contrato
@@ -169,8 +178,6 @@ module MetodosDeContratos
            postcondiciones_metodo.each do |postcondicion|
              if !contexto_postcondiciones.instance_exec(valor_retorno, &postcondicion)
                raise "No se cumplen las postcondiciones"
-             else
-               puts "Se cumplen las postcondiciones"
              end
            end
           @ejecutando_contrato=false
@@ -181,18 +188,6 @@ module MetodosDeContratos
       end
       @new_method = true
     end
-  end
-
-  def invariant(&estado_consistente)
-    lista_invariantes << estado_consistente
-  end
-
-  def pre(&precondicion)
-    lista_precondiciones << precondicion
-  end
-
-  def post(&postcondicion)
-    lista_postcondiciones << postcondicion
   end
 
 end

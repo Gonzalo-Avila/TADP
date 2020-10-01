@@ -61,7 +61,7 @@ describe Contratos do
     end
 
     it("No se puede instanciar un objeto inconsistente") do
-      expect{B.new(1,0,0,5)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{B.new(1,0,0,5)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente: no se cumplió la invariante 1")
     end
 
     it("Se instancia correctamente un objeto con valores consistentes") do
@@ -76,14 +76,14 @@ describe Contratos do
       i = B.new(2,0,0,4)
       expect do
         i.incrementarYRetornarVar(:@var2,2)
-      end.to raise_error(RuntimeError, "El estado del objeto es inconsistente")
+      end.to raise_error(RuntimeError, "El estado del objeto es inconsistente: no se cumplió la invariante 2")
     end
 
     it("Varias invariantes se validan correctamente") do
       i = B.new(2,0,0,4)
       expect(i.incrementarYRetornarVar(:@var2,1)).to eq(1)
       expect(i.incrementarYRetornarVar(:@var3,7)).to eq(7)
-      expect{i.incrementarYRetornarVar(:@var3,1)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{i.incrementarYRetornarVar(:@var3,1)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente: no se cumplió la invariante 3")
     end
 
   end
@@ -369,11 +369,11 @@ describe Contratos do
     end
 
     it("El guerrero no puede tener 0 o menos de fuerza") do
-      expect{Guerrero.new(15,0)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{Guerrero.new(15,0)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente: no se cumplió la invariante 2")
     end
 
     it("El guerrero no puede tener 100 o mas de fuerza") do
-      expect{Guerrero.new(15,100)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{Guerrero.new(15,100)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente: no se cumplió la invariante 2")
     end
 
     it("El guerrero recibe daño correctamente mientras su vida no quede en negativo") do
@@ -386,7 +386,7 @@ describe Contratos do
     it("Un guerrero no puede recibir daño que deje su vida en negativo") do
       guerrero1 = Guerrero.new(15,11)
       guerrero2 = Guerrero.new(10,15)
-      expect{guerrero1.atacar(guerrero2)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{guerrero1.atacar(guerrero2)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente: no se cumplió la invariante 1")
     end
 
   end
@@ -481,7 +481,7 @@ describe Contratos do
     end
 
     it("No se puede instanciar una pila con capacidad negativa") do
-      expect{pila = Pila.new(-1)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente")
+      expect{pila = Pila.new(-1)}.to raise_error(RuntimeError,"El estado del objeto es inconsistente: no se cumplió la invariante 1")
     end
 
     it("Se puede pushear un elemento a la pila") do
