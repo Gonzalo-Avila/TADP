@@ -46,7 +46,7 @@ module MetodosDeContratos
     attr_accessor :instancia
 
     def initialize(instancia)
-      @instancia = instancia
+      self.instancia = instancia
     end
     def set_argumentos_metodo(parametros)
       parametros.each do |nombre, valor|
@@ -99,8 +99,7 @@ module MetodosDeContratos
         nombres_variables_instancia = self.instance_variables
         valores_variables_instancia = nombres_variables_instancia.map {|nombre_var| self.instance_variable_get(nombre_var)}
         variables_instancia = nombres_variables_instancia.zip(valores_variables_instancia)
-
-
+        
         #Seteamos un contexto en el que ejecutar las precondiciones, para que puedan acceder a los metodos, variables y
         #argumentos
         contexto_precondiciones = Contexto.new(self)
