@@ -67,6 +67,7 @@ module MetodosDeContratos
       self.set_variables_instancia(variables_instancia)
 
     end
+
     def set_argumentos_metodo(parametros)
       parametros.each do |nombre, valor|
         if(!nombre.nil?)
