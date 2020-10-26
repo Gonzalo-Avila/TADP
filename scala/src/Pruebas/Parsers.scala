@@ -1,54 +1,96 @@
 import scala.io.Source
 import scala.util.{Try,Success,Failure}
 
-trait Parsers {
+trait Parser{
+  def apply(cadena:String): Try[Tuple2[_,String]]
   
-   def anyChar(cadena:String): Try[Char] = {
-      Try{
+  def <|> (otroParser:Parser)(cadena:String) = {
+   
+    val resultadoParser1 = this.apply(cadena);
+    resultadoParser1 match {
+      case Success(resultado) => this
+      case Failure(error) => otroParser
+    }
+  }
+    
+}
+
+object anyChar extends Parser {
+  
+   def apply (cadena:String): Try[Tuple2[Char,String]] = {
+      Try(
           cadena match {
           case "" => throw new Exception();
-          case _ => cadena.head;
+          case cad => (cad.head,cad.tail);
           }
-    }
+      )
   }
-  
-  def char(caracter: Char, cadena:String): Try[Char] = {
-    Try{
-        cadena match {
-        case "" => throw new Exception();
-        case c if c.head == caracter => c.head;
-        case _ => throw new Exception();
-        }
+}
+
+class char (caracter: Char) extends Parser {
+    def apply(cadena:String): Try[Tuple2[Char,String]] = {
+        Try (
+          cadena match {
+          case "" => throw new Exception();
+          case c if c.head == caracter => (c.head,c.tail);
+          case _ => throw new Exception();
+          }
+      )
     }
-  }
+}
+
+
+class string (cadenaFiltro:String) extends Parser{
   
-   def string(cadenaFiltro:String, cadenaAParsear:String): Try[String] = {
-		   Try{
-  			   cadenaAParsear match {
-  			   case "" => throw new Exception();
-  			   case c if c startsWith cadenaFiltro => cadenaFiltro;
-  			   case _ => throw new Exception();
-  			   }
-		   }
-		   
+  def apply(cadenaAParsear:String): Try[Tuple2[String,String]] = {
+	  Try (
+  	    cadenaAParsear match {
+  		  case "" => throw new Exception();
+  		  case c if c startsWith cadenaFiltro => (cadenaFiltro,cadenaAParsear.substring(cadenaFiltro.size));
+  		  case _ => throw new Exception();
+   	   }
+		)   
    }
-   
-   def digit(caracter:Char): Try[Char] = {
-		   Try{
-		     caracter match {
-		       case c if c.isDigit => c;
+}
+
+object digit extends Parser {
+  
+   def apply(cadena:String): Try[Tuple2[Char,String]] = {
+		   Try(
+		     cadena match {
+		       case cad if cad.head.isDigit => (cad.head,cad.tail);
 		       case _ => throw new Exception();
 		     }
-		   }
+		   )
    }
-   
-   def integer(cadena:String): Try[Int] = {
-     
-     cadena.foreach(c => c.toUpper);
-     println(cadena);
-     return Try(35);
-   }
-		   
+}
+
+object integer extends Parser {
+  def apply(cadena:String): Try[Tuple2[Int,String]] = {
+    Try(
+      cadena match {
+        case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception();
+        case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception();
+        case cad => (cad.toInt,cad);
+      }
+    )
+  }
+}
+
+/*  
+  def double(cadena:String): Try[Double] = {
+    var cadenaSeparada = cadena.split(".")
+    Try(
+        cadena match {
+          case cad if cadenaSeparada.size>2 => throw new Exception();
+          case cad if 
+          cadenaSeparada.size == 2 &&
+          integer(cadenaSeparada.head) == Success(cadenaSeparada.head.toInt) => throw new Exception();
+        }
+    )
+        
+  }
+  
   def num(numero:Int , lista: List[Int]): Int = {
     lista match {
       case Nil => throw new Exception();
@@ -58,4 +100,5 @@ trait Parsers {
   }
     
   def num1 = num(1,_:List[Int]);
-}
+		  
+}*/
