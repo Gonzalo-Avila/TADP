@@ -2,37 +2,68 @@ import scala.io.Source
 import scala.util.{Try,Success,Failure}
 
 trait Parser{
-  def apply(cadena:String): Try[Tuple2[_,String]]
+  def apply(cadena:String): Try[Resultado[_]]
   
-  def <|> (otroParser:Parser)(cadena:String) = {
-   
-    val resultadoParser1 = this.apply(cadena);
-    resultadoParser1 match {
-      case Success(resultado) => this
-      case Failure(error) => otroParser
+  def <|> (otroParser:Parser) = new Or(this,otroParser);
+  def <>  (otroParser:Parser) = new Concat(this,otroParser);
+  
+}
+
+class Resultado[T](elementoParseado:T, cadenaRestante:String){
+  def getElementoParseado = elementoParseado;
+  def getCadenaRestante = cadenaRestante;
+}
+
+class Or (parser1:Parser, parser2:Parser) extends Parser {
+ 
+  def apply (cadena:String): Try[Resultado[_]] = {
+      
+      val resultadoParser1 = parser1.apply(cadena);
+      resultadoParser1 match {
+      case Success(resultado) => resultadoParser1;
+      case Failure(error) => parser2.apply(cadena);
+      }
+   }
+}
+
+class Concat (parser1:Parser, parser2:Parser) extends Parser {
+  
+  def apply(cadena:String): Try[Resultado[_]] = {
+      val resultadoParser1 = parser1.apply(cadena);
+      resultadoParser1 match {
+        case Failure(errorEnParser1) => throw new Exception();
+        case Success(resultado1) => {
+          val resultadoParser2 = parser2.apply(resultadoParser1.get.getCadenaRestante);
+          resultadoParser2 match {
+            case Failure(errorEnParser2) => throw new Exception();
+            case Success(resultado2) => 
+              Try(new Resultado((resultadoParser1.get.getElementoParseado,
+                  resultadoParser2.get.getElementoParseado),
+                  resultadoParser2.get.getCadenaRestante));
+          }
+        }
     }
   }
-    
 }
 
 object anyChar extends Parser {
   
-   def apply (cadena:String): Try[Tuple2[Char,String]] = {
+   def apply (cadena:String): Try[Resultado[Char]] = {
       Try(
           cadena match {
           case "" => throw new Exception();
-          case cad => (cad.head,cad.tail);
+          case cad => new Resultado(cad.head,cad.tail);
           }
       )
   }
 }
 
 class char (caracter: Char) extends Parser {
-    def apply(cadena:String): Try[Tuple2[Char,String]] = {
+    def apply(cadena:String): Try[Resultado[Char]] = {
         Try (
           cadena match {
           case "" => throw new Exception();
-          case c if c.head == caracter => (c.head,c.tail);
+          case c if c.head == caracter => new Resultado(c.head,c.tail);
           case _ => throw new Exception();
           }
       )
@@ -42,11 +73,11 @@ class char (caracter: Char) extends Parser {
 
 class string (cadenaFiltro:String) extends Parser{
   
-  def apply(cadenaAParsear:String): Try[Tuple2[String,String]] = {
+  def apply(cadenaAParsear:String): Try[Resultado[String]] = {
 	  Try (
   	    cadenaAParsear match {
   		  case "" => throw new Exception();
-  		  case c if c startsWith cadenaFiltro => (cadenaFiltro,cadenaAParsear.substring(cadenaFiltro.size));
+  		  case c if c startsWith cadenaFiltro => new Resultado(cadenaFiltro,cadenaAParsear.substring(cadenaFiltro.size));
   		  case _ => throw new Exception();
    	   }
 		)   
@@ -55,10 +86,10 @@ class string (cadenaFiltro:String) extends Parser{
 
 object digit extends Parser {
   
-   def apply(cadena:String): Try[Tuple2[Char,String]] = {
+   def apply(cadena:String): Try[Resultado[Char]] = {
 		   Try(
 		     cadena match {
-		       case cad if cad.head.isDigit => (cad.head,cad.tail);
+		       case cad if cad.head.isDigit => new Resultado(cad.head,cad.tail);
 		       case _ => throw new Exception();
 		     }
 		   )
@@ -66,12 +97,12 @@ object digit extends Parser {
 }
 
 object integer extends Parser {
-  def apply(cadena:String): Try[Tuple2[Int,String]] = {
+  def apply(cadena:String): Try[Resultado[Int]] = {
     Try(
       cadena match {
         case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception();
         case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception();
-        case cad => (cad.toInt,cad);
+        case cad => new Resultado (cad.toInt,cad);
       }
     )
   }
