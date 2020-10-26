@@ -26,20 +26,27 @@ trait Parsers {
 		   Try{
   			   cadenaAParsear match {
   			   case "" => throw new Exception();
-  			   case c if c contains cadenaFiltro => cadenaFiltro;
+  			   case c if c startsWith cadenaFiltro => cadenaFiltro;
   			   case _ => throw new Exception();
   			   }
 		   }
 		   
    }
    
-   def digit(caracter:Char): Try[Int] = {
+   def digit(caracter:Char): Try[Char] = {
 		   Try{
 		     caracter match {
-		       case c if c.isDigit => c.asDigit;
+		       case c if c.isDigit => c;
 		       case _ => throw new Exception();
 		     }
 		   }
+   }
+   
+   def integer(cadena:String): Try[Int] = {
+     
+     cadena.foreach(c => c.toUpper);
+     println(cadena);
+     return Try(35);
    }
 		   
   def num(numero:Int , lista: List[Int]): Int = {
