@@ -7,8 +7,9 @@ trait Parser[T]{
   //Combinators
   def <|> (otroParser:Parser[T]) = new Or[T](this,otroParser)
   def <>  (otroParser:Parser[T]) = new Concat[T](this,otroParser)
-  def ~> (otroParser:Parser[T]) = new RightMost(this,otroParser)
-  def <~ (otroParser:Parser[T]) = new LeftMost(this,otroParser)
+  def ~> (otroParser:Parser[T]) = new RightMost[T](this,otroParser)
+  def <~ (otroParser:Parser[T]) = new LeftMost[T](this,otroParser)
+  //def sepBy(otroParser:Parser[_]) = new SeparatedBy(this, otroParser)
 
   //Operaciones
   def satisfies (condicion: T => Boolean) = new ParserCondicional[T](this, condicion)
@@ -18,6 +19,12 @@ trait Parser[T]{
   //def map (funcion: T => X) = new ParserMap[T](this);
 }
 
+/*class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]){
+  
+    def apply (cadena:String): Try[Resultado[T]] = {
+      
+    }
+}*/
 
 /*class ParserMap[T](parserOriginal: Parser[T]){
   def apply(cadena:String): Try[
