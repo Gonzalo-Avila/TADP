@@ -4,15 +4,103 @@ import scala.util.{Try,Success,Failure}
 trait Parser[T]{
   def apply(cadena:String): Try[Resultado[T]]
   
+  //Combinators
   def <|> (otroParser:Parser[T]) = new Or[T](this,otroParser)
   def <>  (otroParser:Parser[T]) = new Concat[T](this,otroParser)
   def ~> (otroParser:Parser[T]) = new RightMost(this,otroParser)
   def <~ (otroParser:Parser[T]) = new LeftMost(this,otroParser)
+
+  //Operaciones
+  def satisfies (condicion: T => Boolean) = new ParserCondicional[T](this, condicion)
+  def opt = new ParserOpcional[T](this);
+  def * = new ClausuraKleene[T](this);
+  def + = new ClausuraPKleene[T](this);
+  //def map (funcion: T => X) = new ParserMap[T](this);
 }
+
+
+/*class ParserMap[T](parserOriginal: Parser[T]){
+  def apply(cadena:String): Try[
+  
+}*/
+class ClausuraKleene[T](parserOriginal:Parser[T]){
+  def apply(cadena:String): Try[Resultado[List[T]]] = {
+    
+    var listaParcial: List[T] = List()
+    var cadenaParcial = cadena
+    var seguir = true
+    
+    while (seguir){
+        val resultadoActual = parserOriginal.apply(cadenaParcial)
+        resultadoActual match {
+          case Failure(error) => seguir = false
+          case Success(resultado) => {
+            cadenaParcial = resultado.getCadenaRestante
+            listaParcial = listaParcial ++ List(resultado.getElementoParseado)
+          }
+        }
+    }
+    Try(new Resultado(listaParcial,cadenaParcial))
+  }
+}
+
+class ClausuraPKleene[T](parserOriginal:Parser[T]){
+  def apply(cadena:String): Try[Resultado[List[T]]] = {
+    
+    var listaParcial: List[T] = List()
+    var cadenaParcial = cadena
+    var seguir = true
+    
+    while (seguir){
+        val resultadoActual = parserOriginal.apply(cadenaParcial)
+        resultadoActual match {
+          case Failure(error) => seguir = false
+          case Success(resultado) => {
+            cadenaParcial = resultado.getCadenaRestante
+            listaParcial = listaParcial ++ List(resultado.getElementoParseado)
+          }
+        }
+    }
+    Try(
+        listaParcial match {
+          case listaVacia if listaVacia.isEmpty => throw new Exception
+          case listaNoVacia => new Resultado(listaParcial,cadenaParcial)
+        }
+       
+     )
+  }
+}
+
 
 class Resultado[T](elementoParseado:T, cadenaRestante:String){
   def getElementoParseado = elementoParseado
   def getCadenaRestante = cadenaRestante
+}
+
+class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean){
+   def apply(cadena:String): Try[Resultado[T]] = {
+    val resultadoOriginal = parserOriginal.apply(cadena)
+    Try(
+      resultadoOriginal match{
+        case Failure(error) => throw new Exception()
+        case Success(resultado) if !condicion(resultado.getElementoParseado) => throw new Exception()
+        case Success(resultado) => resultado
+      }
+    )
+  }
+}
+
+class ParserOpcional[T](parserOriginal:Parser[T]){
+  
+  def apply(cadena:String): Try[Resultado[Option[T]]] = {
+    val resultadoOriginal = parserOriginal.apply(cadena)
+    Try(
+          resultadoOriginal match {
+            case Success(resultado) => new Resultado (Some(resultado.getElementoParseado), resultado.getCadenaRestante)
+            case Failure(error) => new Resultado(None, cadena)
+          } 
+    )
+  }
 }
 
 class Or [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T] {
@@ -26,6 +114,7 @@ class Or [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T] {
       }
    }
 }
+
 class Concat [T](parser1:Parser[T], parser2:Parser[T]) extends Parser [Tuple2[T,T]]{
   
   def apply(cadena:String): Try[Resultado[Tuple2[T,T]]] = {
@@ -103,6 +192,11 @@ class char (caracter: Char) extends Parser[Char] {
       )
     }
 }
+object char {
+    def apply(caracter: Char): char = {
+        new char(caracter)
+    }
+}
 
 
 class string (cadenaFiltro:String) extends Parser[String]{
@@ -116,6 +210,12 @@ class string (cadenaFiltro:String) extends Parser[String]{
         }
     )   
    }
+}
+
+object string {
+    def apply(cadenaFiltro: String): string = {
+        new string(cadenaFiltro)
+    }
 }
 
 object digit extends Parser[Char]{
@@ -163,29 +263,4 @@ object double extends Parser [Double]{
 
   }
 }
-
-/*  
-  def double(cadena:String): Try[Double] = {
-    var cadenaSeparada = cadena.split(".")
-    Try(
-        cadena match {
-          case cad if cadenaSeparada.size>2 => throw new Exception();
-          case cad if 
-          cadenaSeparada.size == 2 &&
-          integer(cadenaSeparada.head) == Success(cadenaSeparada.head.toInt) => throw new Exception();
-        }
-    )
-        
-  }
-  
-  def num(numero:Int , lista: List[Int]): Int = {
-    lista match {
-      case Nil => throw new Exception();
-      case numero::tail  => numero;
-      case _ =>  throw new Exception();
-    }
-  }
-    
-  def num1 = num(1,_:List[Int]);
 		  
-}*/

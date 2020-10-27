@@ -1,4 +1,4 @@
-package tadp.internal
+/*package tadp.internal
 
 import Operations._
 import scalafx.scene.canvas._
@@ -97,4 +97,4 @@ object TADPDrawingAdapter {
     val screenApp = new TADPInteractiveDrawingScreen(interpreter)
     screenApp.main(Array())
   }
-}
+}*/

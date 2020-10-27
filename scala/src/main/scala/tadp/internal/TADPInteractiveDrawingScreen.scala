@@ -1,4 +1,4 @@
-package tadp.internal
+/*package tadp.internal
 
 import java.io.FileOutputStream
 import java.time.LocalDateTime
@@ -118,4 +118,4 @@ class TADPInteractiveDrawingScreen(dibujador: (String, TADPDrawingAdapter) => An
       info(s"Imagen ${nombreDeImagen} guardada en ${nombreDeCarpeta}")
     }
   }
-}
+}*/
