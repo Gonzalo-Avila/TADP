@@ -127,7 +127,7 @@ class Concat [T](parser1:Parser[T], parser2:Parser[T]) extends Parser [Tuple2[T,
   def apply(cadena:String): Try[Resultado[Tuple2[T,T]]] = {
       val resultadoParser1 = parser1.apply(cadena)
       resultadoParser1 match {
-        case Failure(errorEnParser1) => throw new Exception()
+        case Failure(errorEnParser1) => throw new Exception();
         case Success(resultado1) => {
           val resultadoParser2 = parser2.apply(resultadoParser1.get.getCadenaRestante)
           resultadoParser2 match {
@@ -143,6 +143,24 @@ class Concat [T](parser1:Parser[T], parser2:Parser[T]) extends Parser [Tuple2[T,
 }
 
 class RightMost [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
+  def apply(cadena:String): Try[Resultado[T]] = {
+    val concat = parser1 <> parser2
+    val concatAplicado = concat.apply(cadena)
+  
+    Try(new Resultado(concatAplicado.get.getElementoParseado._2,concatAplicado.get.getCadenaRestante))
+  }
+}
+
+class LeftMost[T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
+   def apply(cadena:String): Try[Resultado[T]] = {
+    val concat = parser1 <> parser2
+    val concatAplicado = concat.apply(cadena)
+  
+    Try(new Resultado(concatAplicado.get.getElementoParseado._1,concatAplicado.get.getCadenaRestante))
+  }
+}
+/*
+class RightMost [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
       def apply(cadena:String): Try[Resultado[T]] = {
           val resultadoParser1 = parser1.apply(cadena);
           resultadoParser1 match {
@@ -157,8 +175,8 @@ class RightMost [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
              }
           }
       }
-}
-
+}*/
+/*
 class LeftMost[T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
     def apply(cadena:String): Try[Resultado[T]] = {
             val resultadoParser1 = parser1.apply(cadena);
@@ -174,7 +192,7 @@ class LeftMost[T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
                 }
             }
     }
-}
+}*/
 
 object anyChar extends Parser[Char] {
   

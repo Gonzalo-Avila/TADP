@@ -35,5 +35,13 @@ object Main{
      val kleene = char('a').+
      val res = kleene.apply("axqweqwe")
      println(res.get.getElementoParseado, res.get.getCadenaRestante)
+     
+     val rightMost = char('a') ~> anyChar
+     val rightMostAplicado = rightMost.apply("aranderla")
+     println("(" + rightMostAplicado.get.getElementoParseado + "," + rightMostAplicado.get.getCadenaRestante + ")") 
+      
+     val leftMost = char('a') <~ anyChar
+     val leftMostAplicado = leftMost.apply("aranderla")
+     println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")
   }
 }
