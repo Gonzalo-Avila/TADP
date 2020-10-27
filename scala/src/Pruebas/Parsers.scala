@@ -2,6 +2,7 @@ import scala.io.Source
 import scala.util.{Try,Success,Failure}
 
 trait Parser[T]{
+  
   def apply(cadena:String): Try[Resultado[T]]
   
   //Combinators
@@ -26,7 +27,7 @@ trait Parser[T]{
     }
 }*/
 
-class ParserMap[T,X](parserOriginal: Parser[T], funcion: T => X){
+class ParserMap[T,X](parserOriginal: Parser[T], funcion: T => X) extends Parser[X]{
   def apply(cadena:String): Try[Resultado[X]] = {
     val resultadoOriginal = parserOriginal.apply(cadena)
     Try(
@@ -36,9 +37,9 @@ class ParserMap[T,X](parserOriginal: Parser[T], funcion: T => X){
         }
     )
   }
-  
 }
-class ClausuraKleene[T](parserOriginal:Parser[T]){
+
+class ClausuraKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
   def apply(cadena:String): Try[Resultado[List[T]]] = {
     
     var listaParcial: List[T] = List()
@@ -59,7 +60,7 @@ class ClausuraKleene[T](parserOriginal:Parser[T]){
   }
 }
 
-class ClausuraPKleene[T](parserOriginal:Parser[T]){
+class ClausuraPKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
   def apply(cadena:String): Try[Resultado[List[T]]] = {
     
     var listaParcial: List[T] = List()
@@ -92,7 +93,7 @@ class Resultado[T](elementoParseado:T, cadenaRestante:String){
   def getCadenaRestante = cadenaRestante
 }
 
-class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean){
+class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean) extends Parser[T]{
    def apply(cadena:String): Try[Resultado[T]] = {
     val resultadoOriginal = parserOriginal.apply(cadena)
     Try(
@@ -105,7 +106,7 @@ class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean){
   }
 }
 
-class ParserOpcional[T](parserOriginal:Parser[T]){
+class ParserOpcional[T](parserOriginal:Parser[T]) extends Parser[Option[T]]{
   
   def apply(cadena:String): Try[Resultado[Option[T]]] = {
     val resultadoOriginal = parserOriginal.apply(cadena)

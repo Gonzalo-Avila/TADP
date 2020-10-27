@@ -47,6 +47,11 @@ object Main{
      val map = string("asd").map(c => c.toUpperCase())
      val mapAplicado = map.apply("asdasdasd");
      println("(" + mapAplicado.get.getElementoParseado + "," + mapAplicado.get.getCadenaRestante + ")")
+     
+     //val c = char('-').map(c => List(c)) //=> devuelve una lista con el char en una lista, o error
+     //val d = digit.+                     //=> devuelve todos los elementos en una lista, o error 
+     //val f = c <> d
+     //val p = (c <> d) <|> digit.+ 
   
   }
 }
