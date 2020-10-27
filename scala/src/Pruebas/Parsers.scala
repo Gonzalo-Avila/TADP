@@ -141,10 +141,8 @@ object integer extends Parser [Int]{
     )
   }
 }
-<<<<<<< Updated upstream
-=======
 
-object double extends Parser {
+object double extends Parser [Double]{
   def apply(cadena: String): Try[Resultado[Double]] = {
     if (!(cadena.contains('.'))) throw new Exception()
 
@@ -166,7 +164,6 @@ object double extends Parser {
   }
 }
 
->>>>>>> Stashed changes
 /*  
   def double(cadena:String): Try[Double] = {
     var cadenaSeparada = cadena.split(".")
