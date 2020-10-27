@@ -5,10 +5,10 @@ trait Parser[T]{
   def apply(cadena:String): Try[Resultado[T]]
   
   //Combinators
-  def <|> (otroParser:Parser[T]) = new Or[T](this,otroParser)
-  def <>  (otroParser:Parser[T]) = new Concat[T](this,otroParser)
-  def ~> (otroParser:Parser[T]) = new RightMost[T](this,otroParser)
-  def <~ (otroParser:Parser[T]) = new LeftMost[T](this,otroParser)
+  def <|> (otroParser:Parser[T]) = new Or(this,otroParser)
+  def <>  (otroParser:Parser[T]) = new Concat(this,otroParser)
+  def ~> (otroParser:Parser[T]) = new RightMost(this,otroParser)
+  def <~ (otroParser:Parser[T]) = new LeftMost(this,otroParser)
   //def sepBy(otroParser:Parser[_]) = new SeparatedBy(this, otroParser)
 
   //Operaciones
