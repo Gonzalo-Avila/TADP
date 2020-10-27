@@ -12,11 +12,11 @@ trait Parser[T]{
   //def sepBy(otroParser:Parser[_]) = new SeparatedBy(this, otroParser)
 
   //Operaciones
-  def satisfies (condicion: T => Boolean) = new ParserCondicional[T](this, condicion)
-  def opt = new ParserOpcional[T](this);
-  def * = new ClausuraKleene[T](this);
-  def + = new ClausuraPKleene[T](this);
-  //def map (funcion: T => X) = new ParserMap[T](this);
+  def satisfies (condicion: T => Boolean) = new ParserCondicional(this, condicion)
+  def opt = new ParserOpcional(this);
+  def * = new ClausuraKleene(this);
+  def + = new ClausuraPKleene(this);
+  def map (funcion: T => Any) = new ParserMap(this, funcion);
 }
 
 /*class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]){
@@ -26,10 +26,18 @@ trait Parser[T]{
     }
 }*/
 
-/*class ParserMap[T](parserOriginal: Parser[T]){
-  def apply(cadena:String): Try[
+class ParserMap[T,X](parserOriginal: Parser[T], funcion: T => X){
+  def apply(cadena:String): Try[Resultado[X]] = {
+    val resultadoOriginal = parserOriginal.apply(cadena)
+    Try(
+        resultadoOriginal match {
+          case Failure(error) => throw new Exception()
+          case Success(resultado) => new Resultado(funcion(resultado.getElementoParseado), resultado.getCadenaRestante)
+        }
+    )
+  }
   
-}*/
+}
 class ClausuraKleene[T](parserOriginal:Parser[T]){
   def apply(cadena:String): Try[Resultado[List[T]]] = {
     
@@ -159,6 +167,7 @@ class LeftMost[T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
     Try(new Resultado(concatAplicado.get.getElementoParseado._1,concatAplicado.get.getCadenaRestante))
   }
 }
+
 /*
 class RightMost [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
       def apply(cadena:String): Try[Resultado[T]] = {

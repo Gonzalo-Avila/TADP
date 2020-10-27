@@ -32,7 +32,7 @@ object Main{
     // precedencia parsea exitosamente las palabras "infija" y "fija"
      //val precedencia = talVezIn <> string("fija")*/
      
-     val kleene = char('a').+
+     /*val kleene = char('a').+
      val res = kleene.apply("axqweqwe")
      println(res.get.getElementoParseado, res.get.getCadenaRestante)
      
@@ -42,6 +42,11 @@ object Main{
       
      val leftMost = char('a') <~ anyChar
      val leftMostAplicado = leftMost.apply("aranderla")
-     println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")
+     println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")*/
+     
+     val map = string("asd").map(c => c.toUpperCase())
+     val mapAplicado = map.apply("asdasdasd");
+     println("(" + mapAplicado.get.getElementoParseado + "," + mapAplicado.get.getCadenaRestante + ")")
+  
   }
 }
