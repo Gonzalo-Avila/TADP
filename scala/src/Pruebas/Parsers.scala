@@ -141,6 +141,32 @@ object integer extends Parser [Int]{
     )
   }
 }
+<<<<<<< Updated upstream
+=======
+
+object double extends Parser {
+  def apply(cadena: String): Try[Resultado[Double]] = {
+    if (!(cadena.contains('.'))) throw new Exception()
+
+    val cadenaSeparada: Array[String] = cadena.split('.')
+    val parteEnteraParseada = integer.apply(cadenaSeparada(0))
+    val parteDecimalParseada = integer.apply(cadenaSeparada(1))
+
+    Try(
+      parteEnteraParseada match {
+        case Failure(_) => throw new Exception()
+        case Success(_) =>
+          parteDecimalParseada match {
+            case Success(_) => new Resultado(cadena.toDouble, cadena)
+            case Failure(_) => throw new Exception()
+          }
+      }
+    )
+
+  }
+}
+
+>>>>>>> Stashed changes
 /*  
   def double(cadena:String): Try[Double] = {
     var cadenaSeparada = cadena.split(".")
