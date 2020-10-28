@@ -63,8 +63,9 @@ object Main{
      val sep3 = anyChar.sepBy(char('#'))
      val sepAplicado3 = sep3.apply("a#sd#qwe.");
      println("(" + sepAplicado3.get.getElementoParseado + "," + sepAplicado3.get.getCadenaRestante + ")")
-     
-     
+
+
+
      /*val leftMost = char('b') ~> string("ra")
      val leftMostAplicado = leftMost.apply("aranderla")
      println(leftMostAplicado)*/
