@@ -82,7 +82,6 @@ class ClausuraPKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
           case listaVacia if listaVacia.isEmpty => throw new Exception
           case listaNoVacia => new Resultado(listaParcial,cadenaParcial)
         }
-       
      )
   }
 }
@@ -284,7 +283,7 @@ object integer extends Parser [Int]{
 //  }
   
   def apply(cadena:String): Try[Resultado[Int]] = {
-    val kleeneConDigit = digit.+
+    val kleeneConDigit = digit.*
     val combinatoria =  (char('-') <|> digit).apply(cadena)
     
 //    combinatoria match{
@@ -296,41 +295,30 @@ object integer extends Parser [Int]{
 //      }
     
      val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
-     
-     Try(new Resultado((combinatoria.get.getElementoParseado+flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante))
+    println(combinatoria.get.getElementoParseado + flattenList)
+     Try(new Resultado((combinatoria.get.getElementoParseado + flattenList).toInt,kleeneConDigit.apply(cadena).get.getCadenaRestante))
   }
 }
 
+//Nico | Luego de desarrollar el *satisfies*, ver si se puede usar para evitar las validaciones
 object double extends Parser [Double]{
   def apply(cadena: String): Try[Resultado[Double]] = {
-
     val cadenaSeparada: Array[String] = cadena.split('.')
-    //Si no es de tamaño mayor a 1, significa que no es un decimal.
-    Try(
-    cadenaSeparada match {
-        case cad if cad.size > 1 => parseDouble(cadena, cadenaSeparada)
-        case _ => throw new Exception();
-//          val posibleInt = integer.apply(cadena)
-//          devolverDouble(cadena, posibleInt)
-      }
-    )
+
+    validarQueLaParteEnteraNoSeaVacio(cadenaSeparada.head)
+
+    val resultadoParteEntera = integer.apply(cadenaSeparada.head)
+    val resultadoParteDecimal = integer.satisfies((entero => entero >= 0)).apply(cadenaSeparada.tail.mkString)
+
+    val elementoParseado = (resultadoParteEntera.get.getElementoParseado + "." + resultadoParteDecimal.get.getElementoParseado).toDouble
+    val cadenaRestante = resultadoParteEntera.get.getCadenaRestante + resultadoParteDecimal.get.getCadenaRestante
+
+    Try(new Resultado(elementoParseado, cadenaRestante))
   }
 
-  private def parseDouble(cadena: String, cadenaSeparada: Array[String]) = {
-    val parteEnteraParseada = integer.apply(cadenaSeparada(0))
-    val parteDecimalParseada = integer.apply(cadenaSeparada(1))
-    parteEnteraParseada match {
-      case Failure(_) => throw new Exception()
-      case Success(_) =>
-        devolverDouble(cadena, parteDecimalParseada)
-    }
+  private def validarQueLaParteEnteraNoSeaVacio(parteEntera: String) = {
+    if (parteEntera.isEmpty) throw new Exception()
   }
 
-  private def devolverDouble(cadena: String, decimal: Try[Resultado[Int]]) = {
-    decimal match {
-      case Success(_) => new Resultado(cadena.toDouble, cadena)
-      case Failure(_) => throw new Exception()
-    }
-  }
 }
 		  
