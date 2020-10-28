@@ -10,14 +10,14 @@ trait Parser[T]{
   def <>  (otroParser:Parser[T]) = new Concat(this,otroParser)
   def ~> (otroParser:Parser[T]) = new RightMost(this,otroParser)
   def <~ (otroParser:Parser[T]) = new LeftMost(this,otroParser)
-  //def sepBy(otroParser:Parser[_]) = new SeparatedBy(this, otroParser)
+  //def sepBy[X](otroParser:Parser[X]) = new SeparatedBy(this, otroParser)
 
   //Operaciones
   def satisfies (condicion: T => Boolean) = new ParserCondicional(this, condicion)
   def opt = new ParserOpcional(this);
   def * = new ClausuraKleene(this);
   def + = new ClausuraPKleene(this);
-  def map (funcion: T => Any) = new ParserMap(this, funcion);
+  def map [X](funcion: T => X) = new ParserMap(this, funcion);
 }
 
 /*class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]){

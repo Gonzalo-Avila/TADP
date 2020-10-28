@@ -51,7 +51,7 @@ object Main{
      //val c = char('-').map(c => List(c)) //=> devuelve una lista con el char en una lista, o error
      //val d = digit.+                     //=> devuelve todos los elementos en una lista, o error 
      //val f = c <> d
-     //val p = (c <> d) <|> digit.+ 
+     //val p = (c <> d) <|> (digit.* <> digit.+)
   
   }
 }
