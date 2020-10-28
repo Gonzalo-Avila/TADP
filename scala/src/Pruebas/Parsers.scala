@@ -2,6 +2,7 @@ import scala.io.Source
 import scala.util.{Try,Success,Failure}
 
 trait Parser[T]{
+  
   def apply(cadena:String): Try[Resultado[T]]
   
   //Combinators
@@ -9,14 +10,14 @@ trait Parser[T]{
   def <>  (otroParser:Parser[T]) = new Concat(this,otroParser)
   def ~> (otroParser:Parser[T]) = new RightMost(this,otroParser)
   def <~ (otroParser:Parser[T]) = new LeftMost(this,otroParser)
-  //def sepBy(otroParser:Parser[_]) = new SeparatedBy(this, otroParser)
+  //def sepBy[X](otroParser:Parser[X]) = new SeparatedBy(this, otroParser)
 
   //Operaciones
-  def satisfies (condicion: T => Boolean) = new ParserCondicional[T](this, condicion)
-  def opt = new ParserOpcional[T](this);
-  def * = new ClausuraKleene[T](this);
-  def + = new ClausuraPKleene[T](this);
-  //def map (funcion: T => X) = new ParserMap[T](this);
+  def satisfies (condicion: T => Boolean) = new ParserCondicional(this, condicion)
+  def opt = new ParserOpcional(this);
+  def * = new ClausuraKleene(this);
+  def + = new ClausuraPKleene(this);
+  def map [X](funcion: T => X) = new ParserMap(this, funcion);
 }
 
 /*class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]){
@@ -26,11 +27,19 @@ trait Parser[T]{
     }
 }*/
 
-/*class ParserMap[T](parserOriginal: Parser[T]){
-  def apply(cadena:String): Try[
-  
-}*/
-class ClausuraKleene[T](parserOriginal:Parser[T]){
+class ParserMap[T,X](parserOriginal: Parser[T], funcion: T => X) extends Parser[X]{
+  def apply(cadena:String): Try[Resultado[X]] = {
+    val resultadoOriginal = parserOriginal.apply(cadena)
+    Try(
+        resultadoOriginal match {
+          case Failure(error) => throw new Exception()
+          case Success(resultado) => new Resultado(funcion(resultado.getElementoParseado), resultado.getCadenaRestante)
+        }
+    )
+  }
+}
+
+class ClausuraKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
   def apply(cadena:String): Try[Resultado[List[T]]] = {
     
     var listaParcial: List[T] = List()
@@ -51,7 +60,7 @@ class ClausuraKleene[T](parserOriginal:Parser[T]){
   }
 }
 
-class ClausuraPKleene[T](parserOriginal:Parser[T]){
+class ClausuraPKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
   def apply(cadena:String): Try[Resultado[List[T]]] = {
     
     var listaParcial: List[T] = List()
@@ -84,7 +93,7 @@ class Resultado[T](elementoParseado:T, cadenaRestante:String){
   def getCadenaRestante = cadenaRestante
 }
 
-class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean){
+class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean) extends Parser[T]{
    def apply(cadena:String): Try[Resultado[T]] = {
     val resultadoOriginal = parserOriginal.apply(cadena)
     Try(
@@ -97,7 +106,7 @@ class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean){
   }
 }
 
-class ParserOpcional[T](parserOriginal:Parser[T]){
+class ParserOpcional[T](parserOriginal:Parser[T]) extends Parser[Option[T]]{
   
   def apply(cadena:String): Try[Resultado[Option[T]]] = {
     val resultadoOriginal = parserOriginal.apply(cadena)
@@ -125,20 +134,27 @@ class Or [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T] {
 class Concat [T](parser1:Parser[T], parser2:Parser[T]) extends Parser [Tuple2[T,T]]{
   
   def apply(cadena:String): Try[Resultado[Tuple2[T,T]]] = {
-      val resultadoParser1 = parser1.apply(cadena)
-      resultadoParser1 match {
-        case Failure(errorEnParser1) => throw new Exception();
-        case Success(resultado1) => {
-          val resultadoParser2 = parser2.apply(resultadoParser1.get.getCadenaRestante)
-          resultadoParser2 match {
-            case Failure(errorEnParser2) => throw new Exception()
-            case Success(resultado2) => 
-              Try(new Resultado((resultadoParser1.get.getElementoParseado,
+//      val resultadoParser1 = parser1.apply(cadena)
+//      resultadoParser1 match {
+//        case Failure(errorEnParser1) => throw new Exception();
+//        case Success(resultado1) => {
+//          val resultadoParser2 = parser2.apply(resultadoParser1.get.getCadenaRestante)
+//          resultadoParser2 match {
+//            case Failure(errorEnParser2) => throw new Exception()
+//            case Success(resultado2) => 
+//              Try(new Resultado((resultadoParser1.get.getElementoParseado,
+//                  resultadoParser2.get.getElementoParseado),
+//                  resultadoParser2.get.getCadenaRestante))
+//          }
+//        }
+//    }
+    
+    val resultadoParser1 = parser1.apply(cadena)
+    val resultadoParser2 = parser2.apply(resultadoParser1.get.getCadenaRestante)
+    
+    Try(new Resultado((resultadoParser1.get.getElementoParseado,
                   resultadoParser2.get.getElementoParseado),
                   resultadoParser2.get.getCadenaRestante))
-          }
-        }
-    }
   }
 }
 
@@ -159,6 +175,7 @@ class LeftMost[T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
     Try(new Resultado(concatAplicado.get.getElementoParseado._1,concatAplicado.get.getCadenaRestante))
   }
 }
+
 /*
 class RightMost [T](parser1:Parser[T], parser2:Parser[T]) extends Parser[T]{
       def apply(cadena:String): Try[Resultado[T]] = {
@@ -256,14 +273,31 @@ object digit extends Parser[Char]{
 }
 
 object integer extends Parser [Int]{
+//  def apply(cadena:String): Try[Resultado[Int]] = {
+//    Try(
+//      cadena match {
+//        case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception();
+//        case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception();
+//        case cad => new Resultado (cad.toInt,cad);
+//      }
+//    )
+//  }
+  
   def apply(cadena:String): Try[Resultado[Int]] = {
-    Try(
-      cadena match {
-        case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception()
-        case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception()
-        case cad => new Resultado (cad.toInt,cad)
-      }
-    )
+    val kleeneConDigit = digit.+
+    val combinatoria =  (char('-') <|> digit).apply(cadena)
+    
+//    combinatoria match{
+//      case Failure(e) => throw new Exception()
+//      case Success(res) => {
+//        val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
+//        Try(new Resultado((combinatoria.get.getElementoParseado+flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante))
+//        }
+//      }
+    
+     val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
+     
+     Try(new Resultado((combinatoria.get.getElementoParseado+flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante))
   }
 }
 
