@@ -1,0 +1,38 @@
+package parsers
+
+import scala.io.Source
+import scala.util.{Try,Success,Failure}
+import general._
+
+object integer extends Parser [Int]{
+//  def apply(cadena:String): Try[Resultado[Int]] = {
+//    Try(
+//      cadena match {
+//        case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception();
+//        case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception();
+//        case cad => new Resultado (cad.toInt,cad);
+//      }
+//    )
+//  }
+  
+  def apply(cadena:String): Try[Resultado[Int]] = {
+    val kleeneConDigit = digit.*
+    val combinatoria =  (char('-') <|> digit).apply(cadena)
+    
+    /*Try(
+      combinatoria match{
+        case Failure(e) => throw new Exception()
+        case Success(res) => {
+          val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
+          new Resultado((combinatoria.get.getElementoParseado+flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante)
+          }
+       }
+    )*/
+    
+    Try({
+     val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
+     //println(combinatoria.get.getElementoParseado + flattenList)
+     new Resultado((combinatoria.get.getElementoParseado + flattenList).toInt,kleeneConDigit.apply(cadena).get.getCadenaRestante)
+    })
+  }
+}

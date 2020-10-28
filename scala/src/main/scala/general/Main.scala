@@ -1,12 +1,11 @@
 import scala.io.Source
 import scala.util.{Try,Success,Failure}
-
+import parsers._
 
 object Main{
   
   
   def main(Args: Array[String]){
-    
     // assert(anyChar.apply("Hola")==Success(new Resultado('H',"ola")));
      //assert(new char('c').apply("colombia") == Success (('c',"olombia")));
      //assert(new string("Hola").apply("Holamundo") == Success (("Hola","mundo")));
@@ -54,6 +53,26 @@ object Main{
      //val p = (c <> d) <|> (digit.* <> digit.+)
 
     //println(double.apply("1.3").get.getElementoParseado)
+    
+     val sep = anyChar.sepBy(char('-'))
+     val sepAplicado = sep.apply("4-");
+     println("(" + sepAplicado.get.getElementoParseado + "," + sepAplicado.get.getCadenaRestante + ")")
+     
+     val sep2 = integer.sepBy(char('-'))
+     val sepAplicado2 = sep2.apply("4321-asd");
+     println("(" + sepAplicado2.get.getElementoParseado + "," + sepAplicado2.get.getCadenaRestante + ")")
+     
+     val sep3 = anyChar.sepBy(char('#'))
+     val sepAplicado3 = sep3.apply("a#sd#qwe.");
+     println("(" + sepAplicado3.get.getElementoParseado + "," + sepAplicado3.get.getCadenaRestante + ")")
+     
+     
+     /*val leftMost = char('b') ~> string("ra")
+     val leftMostAplicado = leftMost.apply("aranderla")
+     println(leftMostAplicado)*/
+     //println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")
+     
+     
   
   }
 }
