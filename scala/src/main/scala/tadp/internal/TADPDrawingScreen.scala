@@ -1,4 +1,4 @@
-/*package tadp.internal
+package tadp.internal
 
 import java.io.FileOutputStream
 
@@ -34,4 +34,4 @@ class TADPDrawingScreen(adapterInstructions: TADPDrawingAdapter => Any, toImage:
     ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new FileOutputStream("out/" + imageName))
     Platform.exit()
   })
-}*/
+}

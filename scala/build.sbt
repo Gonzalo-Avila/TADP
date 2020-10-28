@@ -25,7 +25,7 @@ lazy val osName = System.getProperty("os.name") match {
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.0" % "test",
   "org.scalactic" %% "scalactic" % "3.2.0",
-  "org.scalafx" %% "scalafx" % "14-R19"
+  "org.scalafx" %% "scalafx" % "14-R19",
 )
 
 // Add JavaFX dependencies

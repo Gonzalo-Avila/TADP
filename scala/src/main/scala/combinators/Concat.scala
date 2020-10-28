@@ -1,8 +1,8 @@
 package combinators
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.Try
 
 class Concat [T](parser1:Parser[T], parser2:Parser[T]) extends Parser [Tuple2[T,T]]{
   

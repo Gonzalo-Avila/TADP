@@ -1,8 +1,8 @@
 package operaciones
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.{Failure, Success, Try}
 
 class ClausuraKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
   def apply(cadena:String): Try[Resultado[List[T]]] = {

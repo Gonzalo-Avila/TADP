@@ -1,8 +1,8 @@
 package parsers
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.Try
 
 //Nico | Luego de desarrollar el *satisfies*, ver si se puede usar para evitar las validaciones
 

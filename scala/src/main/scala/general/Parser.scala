@@ -1,8 +1,9 @@
 package general
 
-import scala.util.{Try,Success,Failure}
 import combinators._
 import operaciones._
+
+import scala.util.Try
 
 
 trait Parser[T]{

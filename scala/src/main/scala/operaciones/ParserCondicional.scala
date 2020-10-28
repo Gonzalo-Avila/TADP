@@ -1,8 +1,8 @@
 package operaciones
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.{Failure, Success, Try}
 
 class ParserCondicional[T](parserOriginal:Parser[T], condicion:T => Boolean) extends Parser[T]{
    def apply(cadena:String): Try[Resultado[T]] = {

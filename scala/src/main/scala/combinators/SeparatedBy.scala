@@ -1,8 +1,8 @@
 package combinators
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.{Failure, Success, Try}
 
 
 class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]){

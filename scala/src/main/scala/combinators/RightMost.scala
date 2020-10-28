@@ -1,8 +1,8 @@
 package combinators
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.{Failure, Success, Try}
 
 class RightMost [T,X](parser1:Parser[T], parser2:Parser[X]) extends Parser[X]{
      

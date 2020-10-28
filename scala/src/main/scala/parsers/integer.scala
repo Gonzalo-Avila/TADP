@@ -1,8 +1,8 @@
 package parsers
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.Try
 
 object integer extends Parser [Int]{
 //  def apply(cadena:String): Try[Resultado[Int]] = {

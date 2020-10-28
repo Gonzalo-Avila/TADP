@@ -1,8 +1,8 @@
 package combinators
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.{Failure, Success, Try}
 
 class LeftMost[T,X](parser1:Parser[T], parser2:Parser[X]) extends Parser[T]{
     def apply(cadena:String): Try[Resultado[T]] = {

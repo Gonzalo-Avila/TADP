@@ -1,8 +1,8 @@
 package operaciones
 
-import scala.io.Source
-import scala.util.{Try,Success,Failure}
 import general._
+
+import scala.util.{Failure, Success, Try}
 
 class ParserMap[T,X](parserOriginal: Parser[T], funcion: T => X) extends Parser[X]{
   def apply(cadena:String): Try[Resultado[X]] = {
