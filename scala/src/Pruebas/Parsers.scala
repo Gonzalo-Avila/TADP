@@ -259,9 +259,9 @@ object integer extends Parser [Int]{
   def apply(cadena:String): Try[Resultado[Int]] = {
     Try(
       cadena match {
-        case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception();
-        case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception();
-        case cad => new Resultado (cad.toInt,cad);
+        case cad if cad.head!= '-' && !cad.head.isDigit => throw new Exception()
+        case cad if !cad.tail.matches("^[0-9]+$") => throw new Exception()
+        case cad => new Resultado (cad.toInt,cad)
       }
     )
   }
@@ -269,23 +269,34 @@ object integer extends Parser [Int]{
 
 object double extends Parser [Double]{
   def apply(cadena: String): Try[Resultado[Double]] = {
-    if (!(cadena.contains('.'))) throw new Exception()
 
     val cadenaSeparada: Array[String] = cadena.split('.')
-    val parteEnteraParseada = integer.apply(cadenaSeparada(0))
-    val parteDecimalParseada = integer.apply(cadenaSeparada(1))
-
+    //Si no es de tamaño mayor a 1, significa que no es un decimal.
     Try(
-      parteEnteraParseada match {
-        case Failure(_) => throw new Exception()
-        case Success(_) =>
-          parteDecimalParseada match {
-            case Success(_) => new Resultado(cadena.toDouble, cadena)
-            case Failure(_) => throw new Exception()
-          }
+    cadenaSeparada match {
+        case cad if cad.size > 1 => parseDouble(cadena, cadenaSeparada)
+        case _ => throw new Exception();
+//          val posibleInt = integer.apply(cadena)
+//          devolverDouble(cadena, posibleInt)
       }
     )
+  }
 
+  private def parseDouble(cadena: String, cadenaSeparada: Array[String]) = {
+    val parteEnteraParseada = integer.apply(cadenaSeparada(0))
+    val parteDecimalParseada = integer.apply(cadenaSeparada(1))
+    parteEnteraParseada match {
+      case Failure(_) => throw new Exception()
+      case Success(_) =>
+        devolverDouble(cadena, parteDecimalParseada)
+    }
+  }
+
+  private def devolverDouble(cadena: String, decimal: Try[Resultado[Int]]) = {
+    decimal match {
+      case Success(_) => new Resultado(cadena.toDouble, cadena)
+      case Failure(_) => throw new Exception()
+    }
   }
 }
 		  
