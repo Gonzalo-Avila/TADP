@@ -1,4 +1,4 @@
-import parsers._
+package general
 
 object Main{
   
@@ -52,7 +52,7 @@ object Main{
 
     //println(double.apply("1.3").get.getElementoParseado)
     
-     val sep = anyChar.sepBy(char('-'))
+     /*val sep = anyChar.sepBy(char('-'))
      val sepAplicado = sep.apply("4-");
      println("(" + sepAplicado.get.getElementoParseado + "," + sepAplicado.get.getCadenaRestante + ")")
      
@@ -63,15 +63,13 @@ object Main{
      val sep3 = anyChar.sepBy(char('#'))
      val sepAplicado3 = sep3.apply("a#sd#qwe.");
      println("(" + sepAplicado3.get.getElementoParseado + "," + sepAplicado3.get.getCadenaRestante + ")")
-
+     */
 
 
      /*val leftMost = char('b') ~> string("ra")
      val leftMostAplicado = leftMost.apply("aranderla")
      println(leftMostAplicado)*/
      //println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")
-     
-     
   
   }
 }

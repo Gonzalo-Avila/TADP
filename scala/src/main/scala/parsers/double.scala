@@ -10,19 +10,23 @@ import scala.util.Try
   def apply(cadena: String): Try[Resultado[Double]] = {
     val cadenaSeparada: Array[String] = cadena.split('.')
 
-    validarQueLaParteEnteraNoSeaVacio(cadenaSeparada.head)
+    Try(
+      cadenaSeparada match {
+        case cad if cad.head.isEmpty => throw new Exception()
+        case _ =>
+          val resultadoParteEntera = integer.apply(cadenaSeparada.head)
+          val resultadoParteDecimal = integer.satisfies((entero => entero >= 0)).apply(cadenaSeparada.tail.head)
+          println(cadenaSeparada.tail.head)
 
-    val resultadoParteEntera = integer.apply(cadenaSeparada.head)
-    val resultadoParteDecimal = integer.satisfies((entero => entero >= 0)).apply(cadenaSeparada.tail.mkString)
+          val elementoParseado = (resultadoParteEntera.get.getElementoParseado + "." + resultadoParteDecimal.get.getElementoParseado).toDouble
+          var cadenaRestante = resultadoParteEntera.get.getCadenaRestante + resultadoParteDecimal.get.getCadenaRestante
+          //Agrego otros elementos de la lista a la cadenaRestante en caso de que haya más de un '.' en la cadena a parsear.
+          if (cadenaSeparada.size > 2) {
+            cadenaRestante = cadenaRestante + "." + cadenaSeparada.tail.tail.mkString(".")
+          }
 
-    val elementoParseado = (resultadoParteEntera.get.getElementoParseado + "." + resultadoParteDecimal.get.getElementoParseado).toDouble
-    val cadenaRestante = resultadoParteEntera.get.getCadenaRestante + resultadoParteDecimal.get.getCadenaRestante
-
-    Try(new Resultado(elementoParseado, cadenaRestante))
+          new Resultado(elementoParseado, cadenaRestante)
+      }
+    )
   }
-
-  private def validarQueLaParteEnteraNoSeaVacio(parteEntera: String) = {
-    if (parteEntera.isEmpty) throw new Exception()
-  }
-
 }
