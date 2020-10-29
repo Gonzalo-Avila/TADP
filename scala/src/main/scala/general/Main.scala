@@ -1,12 +1,15 @@
 package general
 
 import parsersImagenes._
+import scalafx.scene.paint.Color
+import tadp.internal._
 
 object Main{
   
   
   def main(Args: Array[String]){
-    // assert(anyChar.apply("Hola")==Success(new Resultado('H',"ola")));
+
+     // assert(anyChar.apply("Hola")==Success(new Resultado('H',"ola")));
      //assert(new char('c').apply("colombia") == Success (('c',"olombia")));
      //assert(new string("Hola").apply("Holamundo") == Success (("Hola","mundo")));
      //assert(digit.apply("1qwe21wq")==Success(('1',"qwe21wq")));
@@ -52,7 +55,7 @@ object Main{
      //val f = c <> d
      //val p = (c <> d) <|> (digit.* <> digit.+)
 
-    //println(double.apply("1.3").get.getElementoParseado)
+     //println(double.apply("1.3").get.getElementoParseado)
     
      /*val sep = anyChar.sepBy(char('-'))
      val sepAplicado = sep.apply("4-");
@@ -66,7 +69,6 @@ object Main{
      val sepAplicado3 = sep3.apply("a#sd#qwe.");
      println("(" + sepAplicado3.get.getElementoParseado + "," + sepAplicado3.get.getCadenaRestante + ")")
      */
-
 
      /*val leftMost = char('b') ~> string("ra")
      val leftMostAplicado = leftMost.apply("aranderla")
@@ -82,5 +84,17 @@ object Main{
 
      println(parserCirculo.apply("circulo[0 @ 248, 40]").get.getElementoParseado)
      println(parserCirculo.apply("circulo[0 @ 248, 40]").get.getCadenaRestante)
+
+    TADPDrawingAdapter.forScreen {
+      adapter =>
+      adapter.beginColor(Color.rgb(50, 25, 100))
+        .rectangle((200, 200), (300, 400))
+        .beginRotate(360)
+        .triangle((200, 200), (300, 400), (500, 500))
+        .end()
+        .end()
+        .triangle((100, 100), (0, 150), (200, 300))
+    }
+
   }
 }
