@@ -5,7 +5,7 @@ import general._
 import scala.util.{Failure, Success, Try}
 
 
-class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]){
+class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]) extends Parser[List[T]]{
    
       def apply (cadena:String): Try[Resultado[List[T]]] = {
         

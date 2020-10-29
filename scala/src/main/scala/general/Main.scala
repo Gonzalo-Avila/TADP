@@ -1,5 +1,7 @@
 package general
 
+import parsersImagenes.parserRectangulo
+
 object Main{
   
   
@@ -70,6 +72,8 @@ object Main{
      val leftMostAplicado = leftMost.apply("aranderla")
      println(leftMostAplicado)*/
      //println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")
-  
+
+     println(parserRectangulo.apply("rectangulo[0 @ 248, 40 @ 400]").get.getElementoParseado)
+     println(parserRectangulo.apply("rectangulo[0 @ 248, 40 @ 400]").get.getCadenaRestante)
   }
 }
