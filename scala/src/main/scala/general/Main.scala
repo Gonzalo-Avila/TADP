@@ -1,6 +1,6 @@
 package general
 
-import parsersImagenes.parserRectangulo
+import parsersImagenes._
 
 object Main{
   
@@ -75,5 +75,12 @@ object Main{
 
      println(parserRectangulo.apply("rectangulo[0 @ 248, 40 @ 400]").get.getElementoParseado)
      println(parserRectangulo.apply("rectangulo[0 @ 248, 40 @ 400]").get.getCadenaRestante)
+
+     //println(parserTriangulo.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]"))
+     println(parserTriangulo.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]").get.getElementoParseado)
+     println(parserTriangulo.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]").get.getCadenaRestante)
+
+     println(parserCirculo.apply("circulo[0 @ 248, 40]").get.getElementoParseado)
+     println(parserCirculo.apply("circulo[0 @ 248, 40]").get.getCadenaRestante)
   }
 }
