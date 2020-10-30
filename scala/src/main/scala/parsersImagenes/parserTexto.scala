@@ -56,7 +56,7 @@ object parserTexto {
   }
 
  /* def armarNodo2(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
-    val nombre = resultado.get.getElementoParseado._1._1(0)
+    val nombre = (resultado.get.getElementoParseado._1._1(0).head.toUpper + resultado.get.getElementoParseado._1._1(0).tail.toUpperCase())
 
     val clase  = Class.forName(nombre).newInstance.asInstanceOf[{ def armarNodo(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo }]
     clase.armarNodo(resultado.get.getElementoParseado._2._1)
