@@ -1,12 +1,12 @@
 package parsersImagenes
 
 import combinators.Concat
-import general.Resultado
+import general._
 import parsers.{char, string}
 
 import scala.util.Try
 
-abstract class parserImagen {
+abstract class parserFigura extends Parser[((List[String], List[String]), (List[String], List[String]))] {
   val figura: String
 
   def apply(cadena: String): Try[Resultado[((List[String], List[String]), (List[String], List[String]))]] = {
@@ -17,6 +17,6 @@ abstract class parserImagen {
     (parserInicio <> parserParametros).apply(cadena)
   }
 
-  def armarParserDeParametros: Concat[List[String]]
+  def armarParserDeParametros: Concat[List[String],List[String]]
 }
 

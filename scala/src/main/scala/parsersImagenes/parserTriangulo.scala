@@ -2,7 +2,7 @@ package parsersImagenes
 
 import parsers.{char, integer, string}
 
-object parserTriangulo extends parserImagen {
+object parserTriangulo extends parserFigura {
 
   override val figura = "triangulo"
   override def armarParserDeParametros = {

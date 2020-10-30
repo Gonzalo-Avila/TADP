@@ -4,6 +4,8 @@ import parsersImagenes._
 import scalafx.scene.paint.Color
 import tadp.internal._
 
+import scala.collection.mutable.RedBlackTree.Tree
+
 object Main{
   
   
@@ -75,15 +77,15 @@ object Main{
      println(leftMostAplicado)*/
      //println("(" + leftMostAplicado.get.getElementoParseado + "," + leftMostAplicado.get.getCadenaRestante + ")")
 
-     println(parserRectangulo.apply("rectangulo[0 @ 248, 40 @ 400]").get.getElementoParseado)
-     println(parserRectangulo.apply("rectangulo[0 @ 248, 40 @ 400]").get.getCadenaRestante)
+     println(anyImage.apply("rectangulo[0 @ 248, 40 @ 400]").get.getElementoParseado)
+     println(anyImage.apply("rectangulo[0 @ 248, 40 @ 400]").get.getCadenaRestante)
 
      //println(parserTriangulo.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]"))
-     println(parserTriangulo.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]").get.getElementoParseado)
-     println(parserTriangulo.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]").get.getCadenaRestante)
+     println(anyImage.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]").get.getElementoParseado)
+     println(anyImage.apply("triangulo[0 @ 248, 40 @ 400, 40 @ 400]").get.getCadenaRestante)
 
-     println(parserCirculo.apply("circulo[0 @ 248, 40]").get.getElementoParseado)
-     println(parserCirculo.apply("circulo[0 @ 248, 40]").get.getCadenaRestante)
+     println(anyImage.apply("circulo[0 @ 248, 40]").get.getElementoParseado)
+     println(anyImage.apply("circulo[0 @ 248, 40]").get.getCadenaRestante)
 
     TADPDrawingAdapter.forScreen {
       adapter =>
@@ -95,6 +97,8 @@ object Main{
         .end()
         .triangle((100, 100), (0, 150), (200, 300))
     }
+
+    val tree = new Tree[]()
 
   }
 }

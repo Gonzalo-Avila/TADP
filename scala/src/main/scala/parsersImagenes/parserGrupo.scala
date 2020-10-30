@@ -1,19 +1,17 @@
 package parsersImagenes
 
-import general.Resultado
+import general._
 import parsers.{char, string}
 
 import scala.util.Try
 
-object parserGrupo {
+object parserGrupo extends Parser[Tuple2[String, String]]{
 
-  /*def apply(cadena: String): Try[Resultado[((List[String], List[String]), (List[String], List[String]))]] = {
+  def apply(cadena: String): Try[Resultado[Tuple2[String, String]]] = {
 
-    val parserInicio = (string("grupo") <> char('(').map { char => char.toString }).map { tupla => Tuple2(List(tupla._1), List(tupla._2)) }
-    val parserParametros = armarParserDeParametros
+    (string("grupo") <> char('(').map { char => char.toString }).apply(cadena)
 
-    (parserInicio <> parserParametros).apply(cadena)
-  }*/
+  }
 
 }
 

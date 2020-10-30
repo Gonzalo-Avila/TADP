@@ -12,7 +12,7 @@ trait Parser[T]{
   
   //Combinators
   def <|> (otroParser:Parser[T]) = new Or(this,otroParser)
-  def <>  (otroParser:Parser[T]) = new Concat(this,otroParser)
+  def <>  [X](otroParser:Parser[X]) = new Concat(this,otroParser)
   def ~> [X](otroParser:Parser[X]) = new RightMost(this,otroParser)
   def <~ [X](otroParser:Parser[X]) = new LeftMost(this,otroParser)
   def sepBy[X](otroParser:Parser[X]) = new SeparatedBy(this, otroParser)

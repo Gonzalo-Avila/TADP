@@ -4,9 +4,9 @@ import general._
 
 import scala.util.Try
 
-class Concat [T](parser1:Parser[T], parser2:Parser[T]) extends Parser [Tuple2[T,T]]{
+class Concat [T,X](parser1:Parser[T], parser2:Parser[X]) extends Parser [Tuple2[T,X]]{
   
-  def apply(cadena:String): Try[Resultado[Tuple2[T,T]]] = {
+  def apply(cadena:String): Try[Resultado[Tuple2[T,X]]] = {
 //      val resultadoParser1 = parser1.apply(cadena)
 //      resultadoParser1 match {
 //        case Failure(errorEnParser1) => throw new Exception();
