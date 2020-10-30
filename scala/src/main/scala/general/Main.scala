@@ -4,7 +4,8 @@ import parsersImagenes._
 import scalafx.scene.paint.Color
 import tadp.internal._
 
-import scala.collection.mutable.RedBlackTree.Tree
+import scala.collection.mutable._
+import scala.reflect.runtime.universe.{Tree, reify}
 
 object Main{
   
@@ -87,7 +88,7 @@ object Main{
      println(anyImage.apply("circulo[0 @ 248, 40]").get.getElementoParseado)
      println(anyImage.apply("circulo[0 @ 248, 40]").get.getCadenaRestante)
 
-    TADPDrawingAdapter.forScreen {
+    /*TADPDrawingAdapter.forScreen {
       adapter =>
       adapter.beginColor(Color.rgb(50, 25, 100))
         .rectangle((200, 200), (300, 400))
@@ -96,9 +97,35 @@ object Main{
         .end()
         .end()
         .triangle((100, 100), (0, 150), (200, 300))
-    }
 
-    val tree = new Tree[]()
+    }*/
+
+    /*var adapter :TADPDrawingAdapter = ???
+    adapter = adapter.rectangle((200, 200), (300, 400))
+    adapter = adapter.beginRotate(360)
+    adapter = adapter.triangle((200, 200), (300, 400), (500, 500))
+    adapter = adapter.end()
+    adapter = adapter.triangle((100, 100), (0, 150), (200, 300))*/
+
+
+
+    /*var arbol = Nodo(Raiz)
+    var nodo1 = Nodo(Colores(Color.rgb(240,3,4)))
+    var nodo2 = Nodo(Triangulo((200,200),(300,400),(500,500)))
+    var nodo3 = Nodo(Rectangulo((100,100),(200,200)))
+    var nodo4 = Nodo(Circulo((500,40),90))
+    arbol.agregarHijo(nodo1)
+    arbol.agregarHijo(nodo4)
+    nodo1.agregarHijo(nodo2)
+    nodo1.agregarHijo(nodo3)*/
+
+    val arbol = parserTexto.apply("escala[1, 1](grupo(color[0, 0, 0](rectangulo[0 @ 0, 400 @ 400]),color[200, 70, 0](rectangulo[0 @ 0, 180 @ 150]),color[250, 250, 250](grupo(rectangulo[186 @ 0, 400 @ 150],rectangulo[186 @ 159, 400 @ 240],rectangulo[0 @ 159, 180 @ 240],rectangulo[45 @ 248, 180 @ 400],rectangulo[310 @ 248, 400 @ 400],rectangulo[186 @ 385, 305 @ 400])),color[30, 50, 130](rectangulo[186 @ 248, 305 @ 380]),color[250, 230, 0](rectangulo[0 @ 248, 40 @ 400])))")
+    TADPDrawingAdapter.forScreen {a => arbol.preOrden(a)}
+
+    //TADPDrawingAdapter.forScreen {a => a.triangle((200,50),(101,335),(299,335))}
+
+
 
   }
 }
+
