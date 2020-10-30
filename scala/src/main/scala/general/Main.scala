@@ -1,11 +1,7 @@
 package general
 
 import parsersImagenes._
-import scalafx.scene.paint.Color
-import tadp.internal._
-
-import scala.collection.mutable._
-import scala.reflect.runtime.universe.{Tree, reify}
+import tadp.internal.TADPDrawingAdapter
 
 object Main{
   
@@ -119,10 +115,12 @@ object Main{
     nodo1.agregarHijo(nodo2)
     nodo1.agregarHijo(nodo3)*/
 
-    val arbol = parserTexto.apply("escala[1, 1](grupo(color[0, 0, 0](rectangulo[0 @ 0, 400 @ 400]),color[200, 70, 0](rectangulo[0 @ 0, 180 @ 150]),color[250, 250, 250](grupo(rectangulo[186 @ 0, 400 @ 150],rectangulo[186 @ 159, 400 @ 240],rectangulo[0 @ 159, 180 @ 240],rectangulo[45 @ 248, 180 @ 400],rectangulo[310 @ 248, 400 @ 400],rectangulo[186 @ 385, 305 @ 400])),color[30, 50, 130](rectangulo[186 @ 248, 305 @ 380]),color[250, 230, 0](rectangulo[0 @ 248, 40 @ 400])))")
+//    val arbol = parserTexto.apply("escala[1, 1](grupo(color[0, 0, 0](rectangulo[0 @ 0, 400 @ 400]),color[200, 70, 0](rectangulo[0 @ 0, 180 @ 150]),color[250, 250, 250](grupo(rectangulo[186 @ 0, 400 @ 150],rectangulo[186 @ 159, 400 @ 240],rectangulo[0 @ 159, 180 @ 240],rectangulo[45 @ 248, 180 @ 400],rectangulo[310 @ 248, 400 @ 400],rectangulo[186 @ 385, 305 @ 400])),color[30, 50, 130](rectangulo[186 @ 248, 305 @ 380]),color[250, 230, 0](rectangulo[0 @ 248, 40 @ 400])))")
+    val arbol = parserTexto.apply("grupo(triangulo[200 @ 50, 101 @ 335, 299 @ 335],circulo[200 @ 350, 100])")
     TADPDrawingAdapter.forScreen {a => arbol.preOrden(a)}
 
-    //TADPDrawingAdapter.forScreen {a => a.triangle((200,50),(101,335),(299,335))}
+//    println('h'.toUpper + "ola".toUpperCase())
+//    TADPDrawingAdapter.forScreen {a => a.triangle((200,50),(101,335),(299,335))}
 
 
 

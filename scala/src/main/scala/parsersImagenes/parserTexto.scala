@@ -1,10 +1,10 @@
 package parsersImagenes
 
-import parsers._
 import general._
+import parsers._
 import scalafx.scene.paint.Color
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 object parserTexto {
 
@@ -51,6 +51,47 @@ object parserTexto {
         val param2 = resultado.get.getElementoParseado._2._1(1).toDouble
         val param3 = resultado.get.getElementoParseado._2._1(2).toDouble
         Nodo(Circulo((param1,param2),param3))
+      }
+    }
+  }
+
+ /* def armarNodo2(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
+    val nombre = resultado.get.getElementoParseado._1._1(0)
+
+    val clase  = Class.forName(nombre).newInstance.asInstanceOf[{ def armarNodo(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo }]
+    clase.armarNodo(resultado.get.getElementoParseado._2._1)
+    //esta implementacion requiere que cada clase de estas tenga el metodo armarNodo.
+  }
+*/
+
+  def armarNodo3(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
+    resultado.get.getElementoParseado._1._1(0) match {
+      case "escala" => {
+        val parametros = resultado.get.getElementoParseado._2._1.map { p => p.toDouble }
+        Nodo(Escala(parametros(0),parametros(1)))
+      }
+      case "color" => {
+        val listInts = resultado.get.getElementoParseado._2._1.map { p => p.toInt }
+        Nodo(Colores(Color.rgb(listInts(0),listInts(1),listInts(2))))
+      }
+      case "rotacion" => {
+        Nodo(Rotacion(resultado.get.getElementoParseado._2._1(0).toDouble))
+      }
+      case "traslacion" => {
+        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
+        Nodo(Traslacion(parametros(0),parametros(1)))
+      }
+      case "rectangulo" => {
+        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
+        Nodo(Rectangulo((parametros(0),parametros(1)),(parametros(2),(parametros(3)))))
+      }
+      case "triangulo" => {
+        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
+        Nodo(Triangulo((parametros(0),parametros(1)),(parametros(2),parametros(3)),(parametros(4),parametros(5))))
+      }
+      case "circulo" => {
+        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
+        Nodo(Circulo((parametros(0),parametros(1)),parametros(2)))
       }
     }
   }
