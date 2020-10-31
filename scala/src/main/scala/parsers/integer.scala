@@ -28,10 +28,10 @@ object integer extends Parser [Int]{
           }
        }
     )*/
-    
+    //TODO - CharParser('-').opt <> DigitParser.+ Ver como usar este
     Try({
      val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
-     new Resultado((combinatoria.get.getElementoParseado + flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante)
+     Resultado((combinatoria.get.getElementoParseado + flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante)
     })
   }
 }

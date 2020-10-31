@@ -31,7 +31,7 @@ import scala.util.Try
    def apply(cadena: String): Try[Resultado[Double]] = {
      val cadenaSeparada = integer.sepBy(char('.')).apply(cadena)
 
-     Try(
+     /*Try(
        cadenaSeparada.get.getElementoParseado(1) match {
          case parteDecimal if parteDecimal < 0 => throw new Exception()
          case _ => {
@@ -44,7 +44,24 @@ import scala.util.Try
            new Resultado(elementoParseado, cadenaRestante)
          }
        }
-     )
+     )*/
+
+
+       cadenaSeparada.map { resultadoCorrecto =>
+         resultadoCorrecto.getElementoParseado(1) match {
+           case parteDecimal if parteDecimal < 0 => throw new Exception()
+           case _ => {
+             //val elementoParseado = (resultadoCorrecto.getElementoParseado.head.toString + "." + resultadoCorrecto.getElementoParseado(1).toString).toDouble
+             val cadenaRestante = resultadoCorrecto.getCadenaRestante
+             //Agrego otros elementos de la lista a la cadenaRestante en caso de que haya más de un '.' en la cadena a parsear.
+
+             resultadoCorrecto.getElementoParseado match {
+               case elemento1 :: elemento2 :: Nil => Resultado(s"$elemento1.$elemento2".toDouble, cadenaRestante)
+               case elemento1 :: elemento2 :: resto => Resultado(s"$elemento1.$elemento2".toDouble, "." + resto.mkString(".") + cadenaRestante)
+             }
+           }
+         }
+       }
 
 
      /*Try(

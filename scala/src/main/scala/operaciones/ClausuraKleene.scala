@@ -10,7 +10,8 @@ class ClausuraKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
     var listaParcial: List[T] = List()
     var cadenaParcial = cadena
     var seguir = true
-    
+
+    //TODO - Reemplazar while por recursividad
     while (seguir){
         val resultadoActual = parserOriginal.apply(cadenaParcial)
         resultadoActual match {
@@ -21,6 +22,6 @@ class ClausuraKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
           }
         }
     }
-    Try(new Resultado(listaParcial,cadenaParcial))
+    Try(Resultado(listaParcial,cadenaParcial))
   }
 }

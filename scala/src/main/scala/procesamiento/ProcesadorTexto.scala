@@ -65,6 +65,7 @@ object ProcesadorTexto {
   }
 */
 
+  //TODO - llevar esta logica al parser, que los parsers devuelvan los objetos en el resultado
   def armarNodo(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo = {
     val parametros = resultado.get.getElementoParseado._2._1.map { p => p.toDouble }
     resultado.get.getElementoParseado._1._1(0) match {

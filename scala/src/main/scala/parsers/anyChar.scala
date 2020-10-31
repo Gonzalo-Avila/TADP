@@ -9,8 +9,8 @@ object anyChar extends Parser[Char] {
    def apply (cadena:String): Try[Resultado[Char]] = {
       Try(
           cadena match {
-          case "" => throw new Exception();
-          case cad => new Resultado(cad.head,cad.tail);
+          case cad if cad.isEmpty => throw new RuntimeException()
+          case cad => Resultado(cad.head,cad.tail)
           }
       )
   }

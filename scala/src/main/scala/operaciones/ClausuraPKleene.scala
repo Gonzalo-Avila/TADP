@@ -10,7 +10,8 @@ class ClausuraPKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
     var listaParcial: List[T] = List()
     var cadenaParcial = cadena
     var seguir = true
-    
+
+    //TODO - Concatenar apicacion de parser + clausura de Kleene
     while (seguir){
         val resultadoActual = parserOriginal.apply(cadenaParcial)
         resultadoActual match {

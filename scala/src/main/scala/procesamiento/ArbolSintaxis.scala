@@ -3,6 +3,7 @@ package procesamiento
 import scalafx.scene.paint.Color
 import tadp.internal.TADPDrawingAdapter
 
+
 class Nodo (elemento: Aplicable) {
   var hijos: List[Nodo]= List()
 
@@ -18,7 +19,7 @@ class Nodo (elemento: Aplicable) {
     hijos.foreach(hijo => adap = hijo.preOrden(adap))
     elemento.aplicarPost(adap)*/
 
-  def imprimir(): Unit ={
+  def imprimir(): Unit = {
     elemento.imprimirPre
     hijos.foreach(hijo => hijo.imprimir)
     elemento.imprimirPost

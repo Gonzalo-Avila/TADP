@@ -6,7 +6,8 @@ import scala.util.{Failure, Success, Try}
 
 
 class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]) extends Parser[List[T]]{
-   
+   //((contentParser <~ sepParser) <|> contentParser).+
+  "2222 2222"
       def apply (cadena:String): Try[Resultado[List[T]]] = {
         
         var listaParcial: List[T] = List()
@@ -39,7 +40,7 @@ class SeparatedBy[T,X](parser1: Parser[T], parser2: Parser[X]) extends Parser[Li
                   }
                 }
               }
-              new Resultado (listaParcial,cadenaParcial)
+              Resultado (listaParcial,cadenaParcial)
             }
           }
         )

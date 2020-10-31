@@ -26,7 +26,7 @@ class Concat [T,X](parser1:Parser[T], parser2:Parser[X]) extends Parser [Tuple2[
       val resultadoParser1 = parser1.apply(cadena)
       val resultadoParser2 = parser2.apply(resultadoParser1.get.getCadenaRestante)
       
-      new Resultado((resultadoParser1.get.getElementoParseado,
+      Resultado((resultadoParser1.get.getElementoParseado,
                     resultadoParser2.get.getElementoParseado),
                     resultadoParser2.get.getCadenaRestante)
     })

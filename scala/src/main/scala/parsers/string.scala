@@ -10,7 +10,7 @@ class string (cadenaFiltro:String) extends Parser[String]{
     Try (
         cadenaAParsear match {
           case "" => throw new Exception();
-          case c if c startsWith cadenaFiltro => new Resultado(cadenaFiltro,cadenaAParsear.substring(cadenaFiltro.size));
+          case c if c startsWith cadenaFiltro => Resultado(cadenaFiltro,cadenaAParsear.substring(cadenaFiltro.size));
           case _ => throw new Exception();
         }
     )   
