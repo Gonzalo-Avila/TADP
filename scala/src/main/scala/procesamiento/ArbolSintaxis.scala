@@ -4,8 +4,9 @@ import scalafx.scene.paint.Color
 import tadp.internal.TADPDrawingAdapter
 
 
-class Nodo (elemento: Aplicable) {
+case class Nodo (elemento: Aplicable) {
   var hijos: List[Nodo]= List()
+  var padre: Nodo = ???
 
   def agregarHijo(hijo: Nodo): Unit ={
     hijos = hijos ++ List(hijo)
@@ -14,16 +15,19 @@ class Nodo (elemento: Aplicable) {
   def preOrden(adapter: TADPDrawingAdapter): TADPDrawingAdapter =
     elemento.aplicarPost(hijos.foldLeft (elemento.aplicarPre(adapter)) {(adap,hijo) => hijo.preOrden(adap)})
 
-  /*var adap = adapter
-    adap = elemento.aplicarPre(adap)
-    hijos.foreach(hijo => adap = hijo.preOrden(adap))
-    elemento.aplicarPost(adap)*/
-
   def imprimir(): Unit = {
     elemento.imprimirPre
     hijos.foreach(hijo => hijo.imprimir)
     elemento.imprimirPost
   }
+
+  def esColor() = {
+        elemento match{
+          case Colores(_) => true
+          case _ => false
+        }
+  }
+
 }
 
 object Nodo {
