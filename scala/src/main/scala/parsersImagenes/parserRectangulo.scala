@@ -1,12 +1,12 @@
 package parsersImagenes
 
-import parsers.{char, integer, string}
+import parsers.{char, double, integer, string}
 
 object parserRectangulo extends parserFigura {
 
   override val figura = "rectangulo"
   override def armarParserDeParametros = {
-    integer.sepBy(string(" @ ") <|> string(", ")).satisfies(lista => lista.size == 4).map { lista => lista.map { numero => numero.toString } } <> char(']').map { char => List(char.toString)}
+    (double <|> integer.map {i => i.toDouble}).sepBy(string("@") <|> string(",")).satisfies(lista => lista.size == 4).map { lista => lista.map { numero => numero.toString } } <> char(']').map { char => List(char.toString)}
   }
 }
 

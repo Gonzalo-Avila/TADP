@@ -4,11 +4,11 @@ import general._
 import parsers._
 import scalafx.scene.paint.Color
 
-import scala.util.Try
+import scala.util.{Success, Failure, Try}
 
 object parserTexto {
 
-  def armarNodo (resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo = {
+  /*def armarNodo3 (resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo = {
     resultado.get.getElementoParseado._1._1(0) match {
       case "escala" => {
         val param1 = resultado.get.getElementoParseado._2._1(0).toDouble
@@ -55,7 +55,7 @@ object parserTexto {
     }
   }
 
- /* def armarNodo2(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
+  def armarNodo2(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
     val nombre = (resultado.get.getElementoParseado._1._1(0).head.toUpper + resultado.get.getElementoParseado._1._1(0).tail.toUpperCase())
 
     val clase  = Class.forName(nombre).newInstance.asInstanceOf[{ def armarNodo(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo }]
@@ -64,49 +64,30 @@ object parserTexto {
   }
 */
 
-  def armarNodo3(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
+  def armarNodo(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo ={
+    val parametros = resultado.get.getElementoParseado._2._1.map { p => p.toDouble }
     resultado.get.getElementoParseado._1._1(0) match {
-      case "escala" => {
-        val parametros = resultado.get.getElementoParseado._2._1.map { p => p.toDouble }
-        Nodo(Escala(parametros(0),parametros(1)))
-      }
-      case "color" => {
-        val listInts = resultado.get.getElementoParseado._2._1.map { p => p.toInt }
-        Nodo(Colores(Color.rgb(listInts(0),listInts(1),listInts(2))))
-      }
-      case "rotacion" => {
-        Nodo(Rotacion(resultado.get.getElementoParseado._2._1(0).toDouble))
-      }
-      case "traslacion" => {
-        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
-        Nodo(Traslacion(parametros(0),parametros(1)))
-      }
-      case "rectangulo" => {
-        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
-        Nodo(Rectangulo((parametros(0),parametros(1)),(parametros(2),(parametros(3)))))
-      }
-      case "triangulo" => {
-        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
-        Nodo(Triangulo((parametros(0),parametros(1)),(parametros(2),parametros(3)),(parametros(4),parametros(5))))
-      }
-      case "circulo" => {
-        val parametros = resultado.get.getElementoParseado._2._1.map{p => p.toDouble}
-        Nodo(Circulo((parametros(0),parametros(1)),parametros(2)))
-      }
+      case "escala"     => Nodo(Escala(parametros(0),parametros(1)))
+      case "color"      => Nodo(Colores(Color.rgb(parametros(0).toInt,parametros(1).toInt,parametros(2).toInt)))
+      case "rotacion"   => Nodo(Rotacion(parametros(0)))
+      case "traslacion" => Nodo(Traslacion(parametros(0),parametros(1)))
+      case "rectangulo" => Nodo(Rectangulo((parametros(0),parametros(1)),(parametros(2),(parametros(3)))))
+      case "triangulo"  =>  Nodo(Triangulo((parametros(0),parametros(1)),(parametros(2),parametros(3)),(parametros(4),parametros(5))))
+      case "circulo"    => Nodo(Circulo((parametros(0),parametros(1)),parametros(2)))
     }
   }
+
+  def limpiarEspacios(cadena: String): String = (char(' ') <|> char('\n') <|> char('\t')).*.apply(cadena).get.getCadenaRestante
 
   def parsearGrupo(cadena: String, nuevoNodo: Nodo): String = {
     var seguir = true
     var cadenaRestante = cadena
-    //cadenaRestante = char('(').apply(cadenaRestante).get.getCadenaRestante
     while (seguir) {
       cadenaRestante = parsear(cadenaRestante, nuevoNodo)
       seguir = char(',').apply(cadenaRestante).isSuccess
       if(seguir){
         cadenaRestante = char(',').apply(cadenaRestante).get.getCadenaRestante
       }
-
     }
     cadenaRestante = char(')').apply(cadenaRestante).get.getCadenaRestante
     cadenaRestante
@@ -114,10 +95,8 @@ object parserTexto {
 
   def parsear(cadena: String, nodoActual: Nodo): String = {
 
-    var cadenaRestante = cadena
-
+    var cadenaRestante = cadena.filterNot( caracter => caracter.isWhitespace || caracter == '\n' || caracter == '\t')
     val resultado = anyTransformation.apply(cadenaRestante)
-
     if (resultado.isSuccess) {
       val nuevoNodo = armarNodo(resultado)
       nodoActual.agregarHijo(nuevoNodo)
