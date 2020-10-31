@@ -4,7 +4,7 @@ import general._
 import parsers._
 import scalafx.scene.paint.Color
 
-import scala.util.{Success, Failure, Try}
+import scala.util.Try
 
 object parserTexto {
 
@@ -89,8 +89,8 @@ object parserTexto {
         cadenaRestante = char(',').apply(cadenaRestante).get.getCadenaRestante
       }
     }
-    cadenaRestante = char(')').apply(cadenaRestante).get.getCadenaRestante
-    cadenaRestante
+    char(')').apply(cadenaRestante).get.getCadenaRestante
+
   }
 
   def parsear(cadena: String, nodoActual: Nodo): String = {
@@ -118,7 +118,7 @@ object parserTexto {
           cadenaRestante = resultado.get.getCadenaRestante
         }
         else {
-          throw new Exception("El texto es invalido")
+          throw new Exception("Descripción de imágen inválida.")
         }
       }
     }

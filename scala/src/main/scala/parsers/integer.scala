@@ -31,7 +31,6 @@ object integer extends Parser [Int]{
     
     Try({
      val flattenList = kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getElementoParseado.mkString
-     //println(combinatoria.get.getElementoParseado + flattenList)
      new Resultado((combinatoria.get.getElementoParseado + flattenList).toInt,kleeneConDigit.apply(combinatoria.get.getCadenaRestante).get.getCadenaRestante)
     })
   }
