@@ -14,4 +14,5 @@ object anyChar extends Parser[Char] {
           }
       )
   }
+
 }

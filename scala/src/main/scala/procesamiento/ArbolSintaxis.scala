@@ -41,67 +41,45 @@ object Raiz extends Aplicable{
   override def imprimirPre = print("adapter")
 }
 
-class Rectangulo(topLeft: (Double,Double), bottomRight: (Double,Double)) extends Aplicable {
+case class Rectangulo(topLeft: (Double,Double), bottomRight: (Double,Double)) extends Aplicable {
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.rectangle(topLeft,bottomRight)
   override def imprimirPre = print(".rectangle(" + topLeft + "," + bottomRight +")")
 }
-object Rectangulo {
-  def apply(topLeft: (Double,Double), bottomRight: (Double,Double)): Rectangulo = new Rectangulo(topLeft, bottomRight)
-}
-class Triangulo(p1: (Double,Double), p2: (Double,Double), p3: (Double,Double)) extends Aplicable {
+
+case class Triangulo(p1: (Double,Double), p2: (Double,Double), p3: (Double,Double)) extends Aplicable {
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.triangle(p1,p2,p3)
   override def imprimirPre = print(".triangle(" + p1 + "," + p2 + "," + p3 + ")")
 }
-object Triangulo {
-  def apply(p1: (Double,Double), p2: (Double,Double), p3: (Double,Double)): Triangulo = new Triangulo(p1, p2, p3)
-}
 
-class Circulo(center: (Double,Double), radius: Double) extends Aplicable {
+case class Circulo(center: (Double,Double), radius: Double) extends Aplicable {
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.circle(center,radius)
   override def imprimirPre = print(".circle(" + center + "," + radius + ")")
 }
-object Circulo {
-  def apply(center: (Double,Double), radius: Double): Circulo = new Circulo(center,radius)
-}
 
-class Colores(color: Color) extends Aplicable{
+case class Colores(color: Color) extends Aplicable{
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.beginColor(color)
   override def aplicarPost(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.end()
   override def imprimirPre = print(".beginColor(" + color.red + "," + color.green + "," + color.blue + ")")
   override def imprimirPost = print(".end")
 }
 
-object Colores {
-  def apply(color: Color): Colores = new Colores(color)
-}
-
-class Escala(x: Double, y:Double) extends Aplicable{
+case class Escala(x: Double, y:Double) extends Aplicable{
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.beginScale(x,y)
   override def aplicarPost(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.end()
   override def imprimirPre = print(".beginScale(" + x + "," + y +")")
   override def imprimirPost = print(".end")
 }
 
-object Escala {
-  def apply(x: Double, y:Double): Escala = new Escala(x,y)
-}
-
-class Rotacion(degrees: Double) extends Aplicable{
+case class Rotacion(degrees: Double) extends Aplicable{
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.beginRotate(degrees)
   override def aplicarPost(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.end()
   override def imprimirPre = print(".beginRotate(" + degrees + ")")
   override def imprimirPost = print(".end")
 }
-object Rotacion {
-  def apply(degrees: Double): Rotacion = new Rotacion(degrees)
-}
 
-class Traslacion(x: Double, y:Double) extends Aplicable{
+case class Traslacion(x: Double, y:Double) extends Aplicable{
   override def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.beginTranslate(x,y)
   override def aplicarPost(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.end()
   override def imprimirPre = print(".beginTraslate(" + x + "," + y + ")")
   override def imprimirPost = print(".end")
-}
-object Traslacion {
-  def apply(x: Double, y:Double): Traslacion = new Traslacion(x,y)
 }

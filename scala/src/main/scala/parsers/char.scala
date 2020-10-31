@@ -4,8 +4,7 @@ import general._
 
 import scala.util.Try
 
-
-class char (caracter: Char) extends Parser[Char] {
+case class char (caracter: Char) extends Parser[Char] {
     def apply(cadena:String): Try[Resultado[Char]] = {
         Try (
             cadena match {
@@ -14,10 +13,5 @@ class char (caracter: Char) extends Parser[Char] {
             case _ => throw new Exception();
           }
       )
-    }
-}
-object char {
-    def apply(caracter: Char): char = {
-        new char(caracter)
     }
 }

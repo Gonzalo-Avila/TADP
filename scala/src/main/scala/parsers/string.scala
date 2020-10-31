@@ -4,7 +4,7 @@ import general._
 
 import scala.util.Try
 
-class string (cadenaFiltro:String) extends Parser[String]{
+case class string (cadenaFiltro:String) extends Parser[String]{
   
   def apply(cadenaAParsear:String): Try[Resultado[String]] = {
     Try (
@@ -15,10 +15,4 @@ class string (cadenaFiltro:String) extends Parser[String]{
         }
     )   
    }
-}
-
-object string {
-    def apply(cadenaFiltro: String): string = {
-        new string(cadenaFiltro)
-    }
 }
