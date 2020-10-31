@@ -2,7 +2,7 @@ package parsersImagenes
 
 import parsers._
 
-object parserTraslacion extends parserTransformacion {
+object ParserTraslacion extends ParserTransformacion {
 
   override val transformacion = "traslacion"
   override def armarParserDeParametros = {

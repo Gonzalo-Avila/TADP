@@ -2,7 +2,7 @@ package parsersImagenes
 import general._
 import parsers.{char, double, integer, string}
 
-object parserColor extends parserTransformacion {
+object ParserColor extends ParserTransformacion {
 
   override val transformacion = "color"
   override def armarParserDeParametros = {

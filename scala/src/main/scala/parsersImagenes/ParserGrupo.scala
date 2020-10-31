@@ -5,7 +5,7 @@ import parsers.{char, string}
 
 import scala.util.Try
 
-object parserGrupo extends Parser[(String, String)]{
+object ParserGrupo extends Parser[(String, String)]{
 
   def apply(cadena: String): Try[Resultado[(String, String)]] = {
 

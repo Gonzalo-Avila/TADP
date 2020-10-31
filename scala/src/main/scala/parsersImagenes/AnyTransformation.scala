@@ -4,10 +4,10 @@ import general.Resultado
 
 import scala.util.Try
 
-object anyTransformation {
+object AnyTransformation {
 
   def apply(cadena: String): Try[Resultado[((List[String], List[String]), (List[String], List[String]))]] = {
-    (parserColor <|> parserEscala <|> parserRotacion <|> parserTraslacion).apply(cadena)
+    (ParserColor <|> ParserEscala <|> ParserRotacion <|> ParserTraslacion).apply(cadena)
   }
 
 }

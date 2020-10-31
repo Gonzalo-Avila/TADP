@@ -4,10 +4,10 @@ import general._
 
 import scala.util.Try
 
-object anyImage {
+object AnyImage {
 
   def apply(cadena: String): Try[Resultado[((List[String], List[String]), (List[String], List[String]))]] = {
-     (parserCirculo <|> parserRectangulo <|> parserTriangulo).apply(cadena)
+     (ParserCirculo <|> ParserRectangulo <|> ParserTriangulo).apply(cadena)
   }
 
 }

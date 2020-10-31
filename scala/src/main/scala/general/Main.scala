@@ -1,6 +1,6 @@
 package general
 
-import parsersImagenes.parserTexto
+import procesamiento.ProcesadorTexto
 import tadp.internal.TADPDrawingAdapter
 
 object Main {
@@ -8,7 +8,7 @@ object Main {
 
   def main(Args: Array[String]) {
 
-    TADPDrawingAdapter.forInteractiveScreen {(imageDescription, adapter) => parserTexto.apply(imageDescription).preOrden(adapter)}
+    TADPDrawingAdapter.forInteractiveScreen {(imageDescription, adapter) => ProcesadorTexto.apply(imageDescription).preOrden(adapter)}
     /*
     val lines = scala.io.Source.fromFile("C:\\mes.txt").mkString
     val carpinchoBostero = parserTexto.apply(lines)
