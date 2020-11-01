@@ -6,7 +6,7 @@ import tadp.internal.TADPDrawingAdapter
 
 case class Nodo (elemento: Aplicable) {
   var hijos: List[Nodo]= List()
-  var padre: Nodo = ???
+  //var padre: Nodo = ???
 
   def agregarHijo(hijo: Nodo): Unit ={
     hijos = hijos ++ List(hijo)

@@ -23,4 +23,6 @@ trait Parser[T]{
   def * = new ClausuraKleene(this)
   def + = new ClausuraPKleene(this)
   def map [X](funcion: T => X) = new ParserMap(this, funcion)
+  //Retorna el resultado del parser original solo si con el termina la cadena
+  def isFinal = new ParserFinal(this)
 }

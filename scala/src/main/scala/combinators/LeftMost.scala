@@ -6,8 +6,13 @@ import scala.util.{Failure, Success, Try}
 
 class LeftMost[T,X](parser1:Parser[T], parser2:Parser[X]) extends Parser[T]{
 
-   //TODO - Reemplazar PM por map
-    def apply(cadena:String): Try[Resultado[T]] = {
+   //TODO - Reemplazar PM por map - DONE
+
+  def apply(cadena:String): Try[Resultado[T]] =
+    parser1.apply(cadena).map {r =>
+      Resultado(r.getElementoParseado,parser2.apply(r.getCadenaRestante).get.getCadenaRestante)}
+
+    /*def apply(cadena:String): Try[Resultado[T]] = {
             val resultadoParser1 = parser1.apply(cadena)
             Try(  
             resultadoParser1 match {
@@ -22,5 +27,5 @@ class LeftMost[T,X](parser1:Parser[T], parser2:Parser[X]) extends Parser[T]{
                 }
             }
             )
-    }
+    }*/
 }

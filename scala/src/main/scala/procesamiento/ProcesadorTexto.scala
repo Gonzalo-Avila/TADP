@@ -52,12 +52,12 @@ object ProcesadorTexto {
       cadenaRestante = char(')').apply(cadenaRestante).get.getCadenaRestante
     }
     else {
-      val resultado = ParserGrupo.apply(cadena)
+      val resultado = ParserGrupo.apply(cadenaRestante)
       if (resultado.isSuccess) {
         cadenaRestante = parsearGrupo(resultado.get.getCadenaRestante, nodoActual)
       }
       else {
-        val resultado = AnyImage.apply(cadena)
+        val resultado = AnyImage.apply(cadenaRestante)
         if (resultado.isSuccess) {
           val nuevoNodo = armarNodo(resultado)
           nodoActual.agregarHijo(nuevoNodo)

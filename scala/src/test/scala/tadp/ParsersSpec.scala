@@ -10,7 +10,7 @@ import combinators._
 import scala.util.{Failure, Success, Try}
 
 class ParsersSpec extends AnyFlatSpec with should.Matchers {
-   "anyChar" should "work with \"hola\"" in {
+   "anyChar" should "work with \"Hola\"" in {
     val resultado = anyChar.apply("Hola")
     resultado.get.getElementoParseado shouldEqual 'H'
     resultado.get.getCadenaRestante shouldEqual "ola"

@@ -5,13 +5,17 @@ import general._
 import scala.util.{Failure, Success, Try}
 
 class ClausuraPKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
+
+  def apply(cadena:String): Try[Resultado[List[T]]] = (parserOriginal <> parserOriginal.*).map{r => List(r._1) ++ r._2}.apply(cadena)
+
+  /*
   def apply(cadena:String): Try[Resultado[List[T]]] = {
     
     var listaParcial: List[T] = List()
     var cadenaParcial = cadena
     var seguir = true
 
-    //TODO - Concatenar apicacion de parser + clausura de Kleene
+    //TODO - Concatenar apicacion de parser + clausura de Kleene - DONE
     while (seguir){
         val resultadoActual = parserOriginal.apply(cadenaParcial)
         resultadoActual match {
@@ -28,5 +32,5 @@ class ClausuraPKleene[T](parserOriginal:Parser[T]) extends Parser[List[T]]{
           case listaNoVacia => new Resultado(listaParcial,cadenaParcial)
         }
      )
-  }
+  }*/
 }
