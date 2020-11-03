@@ -13,13 +13,13 @@ object ProcesadorTexto {
   def armarNodo(resultado: Try[Resultado[((List[String], List[String]), (List[String], List[String]))]]): Nodo = {
     val parametros = resultado.get.getElementoParseado._2._1.map { p => p.toDouble }
     resultado.get.getElementoParseado._1._1(0) match {
-      case "escala" => Nodo(Escala(parametros(0), parametros(1)))
-      case "color" => Nodo(Colores(Color.rgb(parametros(0).toInt, parametros(1).toInt, parametros(2).toInt)))
-      case "rotacion" => Nodo(Rotacion(parametros(0)))
-      case "traslacion" => Nodo(Traslacion(parametros(0), parametros(1)))
-      case "rectangulo" => Nodo(Rectangulo((parametros(0), parametros(1)), (parametros(2), (parametros(3)))))
-      case "triangulo" => Nodo(Triangulo((parametros(0), parametros(1)), (parametros(2), parametros(3)), (parametros(4), parametros(5))))
-      case "circulo" => Nodo(Circulo((parametros(0), parametros(1)), parametros(2)))
+      case "escala" => Escala(parametros(0), parametros(1))
+      case "color" => Colores(Color.rgb(parametros(0).toInt, parametros(1).toInt, parametros(2).toInt))
+      case "rotacion" => Rotacion(parametros(0))
+      case "traslacion" => Traslacion(parametros(0), parametros(1))
+      case "rectangulo" => Rectangulo((parametros(0), parametros(1)), (parametros(2), (parametros(3))))
+      case "triangulo" => Triangulo((parametros(0), parametros(1)), (parametros(2), parametros(3)), (parametros(4), parametros(5)))
+      case "circulo" => Circulo((parametros(0), parametros(1)), parametros(2))
     }
   }
 
@@ -73,7 +73,7 @@ object ProcesadorTexto {
 
   def apply(cadena: String): Nodo = {
 
-    val raiz = Nodo(Raiz)
+    val raiz = new Raiz
 
     var cadenaParcial = cadena
     while (!cadenaParcial.isEmpty) {
