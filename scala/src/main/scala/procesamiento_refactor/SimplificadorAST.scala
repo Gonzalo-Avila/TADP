@@ -2,9 +2,9 @@ package procesamiento_refactor
 
 import scalafx.scene.paint.Color
 
-object SimplificadorAST2 {
+object SimplificadorAST {
 
-  def simplificar(nodo: Nodo): Nodo = {
+  /*def simplificar(nodo: Nodo): Nodo = {
     nodo match {
 
         //case Colores(c1,Colores(c2,hijo)) if c1.equals(c2) => Colores(c2,hijo)
@@ -25,6 +25,6 @@ object SimplificadorAST2 {
         case otro => otro
 
       }
-  }
+  }*/
 
 }

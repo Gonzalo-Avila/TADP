@@ -6,7 +6,7 @@ import scalafx.scene.paint.Color
 
 import scala.util.{Failure, Success, Try}
 
-object ProcesadorTexto2 {
+object ProcesadorTexto {
 
   def apply(cadena: String): Nodo = {
     val cadenaLimpia = cadena.filterNot(caracter => caracter.isWhitespace || caracter == '\n' || caracter == '\t')
@@ -14,7 +14,7 @@ object ProcesadorTexto2 {
     ParserDeImagenes(cadenaLimpia) match {
       case Success(raizArbolSintactico) if !raizArbolSintactico.getCadenaRestante.isEmpty => throw new RuntimeException("Cadena invalida")
       case Success(raizArbolSintactico) => raizArbolSintactico.getElementoParseado
-      case Failure(exception) => throw exception
+      case Failure(_) => throw new RuntimeException("Cadena invalida")
     }
   }
 

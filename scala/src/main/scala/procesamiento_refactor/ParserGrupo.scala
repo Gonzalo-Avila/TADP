@@ -23,7 +23,7 @@ object ParserGrupo extends Parser[Nodo] {
     )*/
 
     resultado.map { r =>
-      val contenidoGrupo = ParserDeImagenes.sepBy(char(','))(r.getCadenaRestante)
+      val contenidoGrupo = (ParserDeImagenes.sepBy(char(',')) <|> ParserDeImagenes.map{elem => List(elem)})(r.getCadenaRestante)
       char(')')(contenidoGrupo.get.getCadenaRestante) match {
         case Success(res) => Resultado(Grupo(contenidoGrupo.get.getElementoParseado),res.getCadenaRestante)
         case Failure(_) => throw new RuntimeException("Falta un parentesis para cerrar el grupo")
