@@ -1,5 +1,6 @@
 package procesamiento
 
+import procesamiento._
 import scalafx.scene.paint.Color
 
 object SimplificadorAST {
@@ -25,26 +26,33 @@ object SimplificadorAST {
   def simplificarNodo(nodo: Nodo): Nodo = {
     nodo match {
 
-      //case nodo if nodo.hijos.isEmpty => nodo
+      case n if n.hijos.size == 1 => n match {
 
-      case Colores(_) if nodo.hijos.size == 1 && nodo.hijos.head.esColor() => nodo.hijos.head
+        case Colores(_) if  nodo.hijos.head.esColor() => nodo.hijos.head
 
-      case Traslacion(_,_) if nodo.hijos.size == 1 && nodo.hijos.head.esTraslacion() =>
-        sumarTraslaciones(nodo.asInstanceOf[Traslacion],nodo.hijos.head.asInstanceOf[Traslacion])
+        case Traslacion(_,_) if nodo.hijos.head.esTraslacion() =>
+          sumarTraslaciones(nodo.asInstanceOf[Traslacion],nodo.hijos.head.asInstanceOf[Traslacion])
 
-      case Rotacion(_) if nodo.hijos.size == 1 && nodo.hijos.head.esRotacion() =>
-        sumarRotaciones(nodo.asInstanceOf[Rotacion],nodo.hijos.head.asInstanceOf[Rotacion])
+        case Rotacion(_) if nodo.hijos.head.esRotacion() =>
+          sumarRotaciones(nodo.asInstanceOf[Rotacion],nodo.hijos.head.asInstanceOf[Rotacion])
 
-      case Escala(_,_) if nodo.hijos.size == 1 && nodo.hijos.head.esEscala()  =>
-        multiplicarEscalas(nodo.asInstanceOf[Escala],nodo.hijos.head.asInstanceOf[Escala])
+        case Escala(_,_) if nodo.hijos.head.esEscala()  =>
+          multiplicarEscalas(nodo.asInstanceOf[Escala],nodo.hijos.head.asInstanceOf[Escala])
 
-      case Traslacion(0,0) if  nodo.hijos.size == 1 => nodo.hijos.head
+        case Traslacion(0,0) => nodo.hijos.head
 
-      case Rotacion(0) if  nodo.hijos.size == 1 => nodo.hijos.head
+        case Rotacion(0) => nodo.hijos.head
 
-      case Escala(1,1) if  nodo.hijos.size == 1 => nodo.hijos.head
+        case Escala(1,1) => nodo.hijos.head
 
-      case _ => nodo
+        case otro => otro
+
+      }
+        //Chequear si hay al menos dos hijos iguales
+        //Crear un nuevo nodo hijo con los hijos de todos los nodos repetidos
+        //Eliminar nodos repetidos del padre
+
+      case n => n
 
     }
   }

@@ -58,6 +58,19 @@ trait Nodo {
       case _ => false
     }
   }
+
+  //def hayDosHijosIguales():Boolean = {
+  //  hijos.exists(h => hijos.)
+  //}
+
+  def sonIdenticos(nodo1: Nodo, nodo2: Nodo)= {
+    (nodo1,nodo2) match {
+      case (Colores(color1),Colores(color2)) => (color1.blue,color1.green,color1.red) ==  (color2.blue,color2.green,color2.red)
+      case (Traslacion(x1,y1),Traslacion(x2,y2)) => (x1,y1) ==  (x2,y2)
+      case (Escala(x1,y1),Escala(x2,y2)) => (x1,y1) ==  (x2,y2)
+      case (Rotacion(degrees1),Rotacion(degrees2)) => degrees1 ==  degrees2
+    }
+  }
 }
 
 class Raiz extends Nodo{

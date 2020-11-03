@@ -1,6 +1,7 @@
 package general
 
-import procesamiento.{ProcesadorTexto, SimplificadorAST}
+//import procesamiento.{ProcesadorTexto, SimplificadorAST}
+import procesamiento_refactor._
 import tadp.internal.TADPDrawingAdapter
 
 object Main {
@@ -8,14 +9,16 @@ object Main {
 
   def main(Args: Array[String]) {
 
-    val cosa = ProcesadorTexto.apply("traslacion[0, 0](\n\t\tcirculo[0 @ 5, 10]\n)\n")
-    cosa.imprimir()
+    val cosa = ProcesadorTexto2.apply("grupo(\n\tcolor[200, 200, 200](rectangulo[100 @ 100, 200 @ 200]),\n\tcolor[200, 200, 200](circulo[100 @ 300, 150])\n)")
+    cosa.imprimir
     println
-    val cosaRancia = SimplificadorAST.simplificarArbol(cosa)
-    cosaRancia.imprimir()
+    cosa.simplificar.imprimir
+    //TADPDrawingAdapter.forScreen {a => cosa.aplicar(a)}
 
 
-    TADPDrawingAdapter.forInteractiveScreen {(imageDescription, adapter) =>  SimplificadorAST.simplificarArbol(ProcesadorTexto.apply(imageDescription)).preOrden(adapter)}
+    //val cosaRancia = SimplificadorAST.simplificarArbol(cosa)
+    //cosaRancia.imprimir()
+    //TADPDrawingAdapter.forInteractiveScreen {(imageDescription, adapter) =>  ProcesadorTexto2.apply(imageDescription).aplicar(adapter)}
 
     /*TADPDrawingAdapter.forScreen { adapter =>
       adapter.rectangle((200, 200), (300, 400))
