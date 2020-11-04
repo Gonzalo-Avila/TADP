@@ -75,8 +75,6 @@ case class Colores(red: Int, green: Int, blue: Int, hijo: Nodo) extends Nodo{
   }
 
   override def simplificar: Nodo = Colores(red,green,blue,hijo.simplificar).reemplazarPorOtro
-
-
 }
 
 case class Escala(x: Double, y:Double, hijo: Nodo) extends Nodo{

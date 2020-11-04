@@ -11,8 +11,7 @@ object ProcesadorTexto {
   def apply(cadena: String): Nodo = {
     val cadenaLimpia = cadena.filterNot(caracter => caracter.isWhitespace || caracter == '\n' || caracter == '\t')
 
-    ParserDeImagenes(cadenaLimpia) match {
-      case Success(raizArbolSintactico) if !raizArbolSintactico.getCadenaRestante.isEmpty => throw new RuntimeException("Cadena invalida")
+    ParserDeImagenes.isFinal(cadenaLimpia) match {
       case Success(raizArbolSintactico) => raizArbolSintactico.getElementoParseado
       case Failure(_) => throw new RuntimeException("Cadena invalida")
     }
