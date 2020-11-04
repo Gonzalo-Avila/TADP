@@ -7,14 +7,12 @@ import tadp.internal.TADPDrawingAdapter
 trait Nodo {
 
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter
-
-  //def aplicarPre(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter
- // def aplicarPost(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter
-
-  def imprimir
   def simplificar:Nodo = this
+  def imprimir
 
 }
+
+
 
 case class Grupo(hijos: List[Nodo]) extends Nodo{
   def imprimir = {
@@ -72,7 +70,7 @@ case class Colores(red: Int, green: Int, blue: Int, hijo: Nodo) extends Nodo{
     print(".end")
   }
   def reemplazarPorOtro: Nodo = this match {
-    case Colores(_, _, _ , otroColor @ Colores(r2,g2,b2, hijo)) => otroColor
+    case Colores(_, _, _ , otroColor @ Colores(_,_,_,_)) => otroColor
     case colorNormal => colorNormal
   }
 

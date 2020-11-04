@@ -17,29 +17,41 @@ object Main {
     println ("Cadena original:")
     imagen1.imprimir
     println
-    println("Cadena simplificada:")
+    println("Cadena simplificada por arbol:")
     imagen1.simplificar.imprimir
+    println
+    println("Cadena simplificada por funcion:")
+    SimplificarAST(imagen1).imprimir
     println
     println
     println ("Cadena original:")
     imagen2.imprimir
     println
-    println("Cadena simplificada:")
+    println("Cadena simplificada por arbol:")
     imagen2.simplificar.imprimir
+    println
+    println("Cadena simplificada por funcion:")
+    SimplificarAST(imagen2).imprimir
     println
     println
     println ("Cadena original:")
     imagen3.imprimir
     println
-    println("Cadena simplificada:")
+    println("Cadena simplificada por arbol:")
     imagen3.simplificar.imprimir
+    println
+    println("Cadena simplificada por funcion:")
+    SimplificarAST(imagen3).imprimir
     println
     println
     println ("Cadena original:")
     imagen4.imprimir
     println
-    println("Cadena simplificada:")
+    println("Cadena simplificada por arbol:")
     imagen4.simplificar.imprimir
+    println
+    println("Cadena simplificada por funcion:")
+    SimplificarAST(imagen4).imprimir
 
 
     //cosa.simplificar.imprimir
