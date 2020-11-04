@@ -1,4 +1,4 @@
-package parsersImagenes
+package parsersImagenes_old
 
 import general._
 import parsers.{char, string}

@@ -1,6 +1,6 @@
-package procesamiento
+package procesamiento_old
 
-import procesamiento._
+import procesamiento_old._
 import scalafx.scene.paint.Color
 
 object SimplificadorAST {

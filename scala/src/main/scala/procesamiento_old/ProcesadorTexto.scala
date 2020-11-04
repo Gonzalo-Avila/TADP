@@ -1,8 +1,8 @@
-package procesamiento
+package procesamiento_old
 
 import general.Resultado
 import parsers.char
-import parsersImagenes.{AnyImage, AnyTransformation, ParserGrupo}
+import parsersImagenes_old.{AnyImage, AnyTransformation, ParserGrupo}
 import scalafx.scene.paint.Color
 
 import scala.util.Try
