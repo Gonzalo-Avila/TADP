@@ -13,24 +13,27 @@ object ProcesadorTexto {
 
     ParserDeImagenes.isFinal(cadenaLimpia) match {
       case Success(raizArbolSintactico) => raizArbolSintactico.getElementoParseado
-      case Failure(_) => throw new RuntimeException("Cadena invalida")
+      case Failure(_) => throw new RuntimeException("La cadena es invalida")
     }
   }
 
 }
 
 object ParserDeImagenes extends Parser[Nodo]{
-  def apply(cadena: String): Try[Resultado[Nodo]] = {
-    (ParserFigura <|> ParserTransformacion <|> ParserGrupo).apply(cadena)
-  }
+
+  def apply(cadena: String): Try[Resultado[Nodo]] = (ParserFigura <|> ParserTransformacion <|> ParserGrupo).apply(cadena)
+
 }
 
 object ParserFigura extends Parser[Nodo]{
+
   def apply(cadena: String): Try[Resultado[Nodo]] = (ParserRectangulo <|> ParserCirculo <|> ParserTriangulo).apply(cadena)
+
 }
 
 
 object ParserTransformacion extends Parser[Nodo]{
+
   def apply(cadena: String): Try[Resultado[Nodo]] = (ParserColor <|> ParserEscala <|> ParserTraslacion <|> ParserRotacion).apply(cadena)
 
 }

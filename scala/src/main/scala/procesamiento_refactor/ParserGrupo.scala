@@ -11,17 +11,6 @@ object ParserGrupo extends Parser[Nodo] {
   def apply(cadena: String) = {
     val resultado = (string("grupo") <> char('(').map { char => char.toString }).apply(cadena)
 
-    /*Try(
-      resultado match {
-        case Success(r) => {
-          val parametros = r.getElementoParseado._2._1.map { p => p.toDouble }
-          val contenidoTransformacion = ParserDeImagenes(r.getCadenaRestante)
-          Resultado(Colores(Color.rgb(parametros(0).toInt, parametros(1).toInt, parametros(2).toInt),contenidoTransformacion.get.getElementoParseado),contenidoTransformacion.get.getCadenaRestante)
-
-        }
-      }
-    )*/
-
     resultado.map { r =>
       val contenidoGrupo = (ParserDeImagenes.sepBy(char(',')) <|> ParserDeImagenes.map{elem => List(elem)})(r.getCadenaRestante)
       char(')')(contenidoGrupo.get.getCadenaRestante) match {
@@ -31,10 +20,6 @@ object ParserGrupo extends Parser[Nodo] {
 
     }
 
-    /*Try({
-      val parametros = resultado.get.getElementoParseado._2._1.map { p => p.toDouble }
-      Resultado(Colores(Color.rgb(parametros(0).toInt, parametros(1).toInt, parametros(2).toInt)), resultado.get.getCadenaRestante)
-    })*/
   }
 
 }

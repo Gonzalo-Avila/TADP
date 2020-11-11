@@ -15,9 +15,8 @@ trait Nodo {
 
 
 case class Grupo(hijos: List[Nodo]) extends Nodo{
-  def imprimir = {
-    hijos.foreach(h => h.imprimir)
-  }
+
+  def imprimir = hijos.foreach(h => h.imprimir)
 
   def extraerRepetidos: Nodo = this match {
 
@@ -39,29 +38,41 @@ case class Grupo(hijos: List[Nodo]) extends Nodo{
       => Colores(r,g,b,Grupo(listaColores.map {listaColores => listaColores.asInstanceOf[Colores].hijo}))
 
     case grupoNormal => grupoNormal
+
   }
 
   override def simplificar: Nodo = Grupo(hijos.map{m => m.simplificar}).extraerRepetidos
 
   def aplicar(adapter:TADPDrawingAdapter): TADPDrawingAdapter = hijos.foldLeft (adapter) {(adap,hijo) => hijo.aplicar(adap)}
+
 }
 
 case class Rectangulo(topLeft: (Double,Double), bottomRight: (Double,Double)) extends Nodo {
+
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.rectangle(topLeft,bottomRight)
+
   def imprimir = print(".rectangle(" + topLeft + "," + bottomRight +")")
+
 }
 
 case class Triangulo(p1: (Double,Double), p2: (Double,Double), p3: (Double,Double)) extends Nodo {
+
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.triangle(p1,p2,p3)
+
   def imprimir = print(".triangle(" + p1 + "," + p2 + "," + p3 + ")")
+
 }
 
 case class Circulo(center: (Double,Double), radius: Double) extends Nodo {
- def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.circle(center,radius)
+
+  def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = adapter.circle(center,radius)
+
   def imprimir = print(".circle(" + center + "," + radius + ")")
+
 }
 
 case class Colores(red: Int, green: Int, blue: Int, hijo: Nodo) extends Nodo{
+
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = hijo.aplicar(adapter.beginColor(Color.rgb(red,green,blue))).end()
 
   def imprimir = {
@@ -69,15 +80,18 @@ case class Colores(red: Int, green: Int, blue: Int, hijo: Nodo) extends Nodo{
     hijo.imprimir
     print(".end")
   }
+
   def reemplazarPorOtro: Nodo = this match {
     case Colores(_, _, _ , otroColor @ Colores(_,_,_,_)) => otroColor
     case colorNormal => colorNormal
   }
 
   override def simplificar: Nodo = Colores(red,green,blue,hijo.simplificar).reemplazarPorOtro
+
 }
 
 case class Escala(x: Double, y:Double, hijo: Nodo) extends Nodo{
+
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = hijo.aplicar(adapter.beginScale(x,y)).end()
 
   def imprimir = {
@@ -93,9 +107,11 @@ case class Escala(x: Double, y:Double, hijo: Nodo) extends Nodo{
   }
 
   override def simplificar: Nodo = Escala(x,y,hijo.simplificar).simplificarEscala
+
 }
 
 case class Rotacion(degrees: Double, hijo: Nodo) extends Nodo{
+
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = hijo.aplicar(adapter.beginRotate(degrees)).end()
 
   def imprimir = {
@@ -111,9 +127,11 @@ case class Rotacion(degrees: Double, hijo: Nodo) extends Nodo{
   }
 
   override def simplificar: Nodo = Rotacion(degrees,hijo.simplificar).simplificarRotacion
+
 }
 
 case class Traslacion(x: Double, y:Double, hijo: Nodo) extends Nodo{
+
   def aplicar(adapter: TADPDrawingAdapter): TADPDrawingAdapter = hijo.aplicar(adapter.beginTranslate(x,y)).end()
 
   def imprimir = {
@@ -129,4 +147,5 @@ case class Traslacion(x: Double, y:Double, hijo: Nodo) extends Nodo{
   }
 
   override def simplificar: Nodo = Traslacion(x,y,hijo.simplificar).simplificarTraslacion
+
 }
